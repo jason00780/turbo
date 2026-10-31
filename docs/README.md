@@ -9,4 +9,5 @@ Source: [Google Drive turbo folder](https://drive.google.com/drive/folders/1dej0
 | `網紅推廣平台一覽v2.pptx` | v2 pitch |
 | `demo.html` | 帶客 KOL × coupon demo |
 | `推廣易_著數易_平台概念摘要.docx` | Phase 1 / Phase 2 concept note |
+| `推廣易_著數易_平台概念摘要.md` | Same concept note, markdown |
 | `phase1-flow.html` | Phase 1 flow: 推廣易 connecting 著數易 |
