@@ -1,0 +1,439 @@
+<!doctype html>
+<html lang="zh-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>推廣易 · 我嘅帳戶</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@400;500;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="sn-inner">
+    <a class="brand" href="index.html">
+      <span class="mark">推</span>
+      <span>推廣易<small>MEMBER</small></span>
+    </a>
+    <div class="site-links app-links" id="site-links">
+      <a data-view="overview" class="active"><span data-icon="home"></span>首頁</a>
+      <a data-view="deals"><span data-icon="tag"></span>著數</a>
+      <a data-view="share"><span data-icon="link"></span>我嘅 Link</a>
+      <a data-view="missions"><span data-icon="target"></span>任務</a>
+      <a data-view="rewards"><span data-icon="award"></span>獎勵</a>
+      <a data-view="wallet"><span data-icon="card"></span>卡包</a>
+    </div>
+    <button class="burger" id="burger" onclick="toggleMenu()" aria-label="選單">☰</button>
+    <div class="nav-actions">
+      <span class="nav-user"><span class="avatar"><i id="nav-avatar">H</i></span><b id="nav-name">@hkfoodie</b></span>
+      <button class="btn btn-ghost btn-sm" onclick="TGY.logout()">登出</button>
+    </div>
+  </div>
+</nav>
+
+<main class="app-main">
+  <header class="app-head">
+    <div class="crumb">推廣易 · 會員版</div>
+    <h1 id="top-title">首頁</h1>
+  </header>
+
+      <!-- ============ 首頁 ============ -->
+      <section class="view" id="view-overview">
+        <div class="card hard pad-lg" style="margin-bottom:18px">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px">
+            <div>
+              <div class="muted small">你好，</div>
+              <h2 style="font-size:26px" id="ov-hello">@hkfoodie</h2>
+              <div style="margin-top:4px"><span class="tag" id="ov-tier">銀章會員</span></div>
+            </div>
+            <div style="text-align:right">
+              <div class="muted small">可回贈積分</div>
+              <div style="font-family:var(--font-mono);font-size:38px;font-weight:700;letter-spacing:-1px;color:var(--red)" id="ov-points">2,480</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="kpis" style="margin-bottom:18px">
+          <div class="kpi hero"><small>累計帶客</small><b id="ov-referred">2</b></div>
+          <div class="kpi"><small>抽獎券</small><b id="ov-tickets">1 張</b></div>
+          <div class="kpi"><small>回贈比例</small><b id="ov-rate">3%</b></div>
+        </div>
+
+        <div class="card" style="margin-bottom:18px">
+          <div class="card-title">里程碑進度 <a class="small" style="color:var(--red)" onclick="go('rewards')">睇全部 →</a></div>
+          <div id="ov-milestone"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">最近回贈 <a class="small" style="color:var(--red)" onclick="go('rewards')">睇全部 →</a></div>
+          <div class="ledger" id="ov-ledger"></div>
+        </div>
+      </section>
+
+      <!-- ============ 著數 ============ -->
+      <section class="view" id="view-deals" style="display:none">
+        <div class="toolbar">
+          <div class="search"><input class="input" id="deal-search" placeholder="搵優惠、店舖…" oninput="renderDeals()"></div>
+          <div class="chips" id="deal-chips"></div>
+        </div>
+        <div class="deal-grid" id="deal-grid"></div>
+      </section>
+
+      <!-- ============ 我嘅 Link ============ -->
+      <section class="view" id="view-share" style="display:none">
+        <div class="card hard pad-lg" style="margin-bottom:18px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap">
+            <div style="flex:1;min-width:280px">
+              <div class="card-title" style="margin-bottom:6px">你嘅推薦專頁</div>
+              <p class="muted small">朋友打開呢條 link，會見到你推薦嘅著數清單，揀邊張領都得——每一張都自動計返你頭上，唔使自己逐張 send。</p>
+              <div class="linkbox" style="margin-top:14px">
+                <small>推薦專頁 link（帶 tracking ID）</small>
+                <div class="code" id="perm-link">tgy.hk/r/user</div>
+                <span class="id" id="perm-id">U-00000</span>
+              </div>
+              <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+                <button class="btn btn-primary btn-sm" onclick="copyPerm()">複製 link</button>
+                <button class="btn btn-ghost btn-sm" onclick="sharePerm()">分享出去</button>
+              </div>
+            </div>
+            <div class="storefront-preview">
+              <div class="sp-head"><b id="sp-name">@user 推薦</b><span>TUI</span></div>
+              <div id="sp-deals"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">我分享過嘅著數 <span class="tag" id="link-count">0</span></div>
+          <p class="muted small" style="margin-bottom:12px">每張 coupon 都有自己嘅 direct link，方便直接 send 俾指定朋友。</p>
+          <div id="link-list" style="display:grid;gap:10px"></div>
+        </div>
+      </section>
+
+      <!-- ============ 任務 ============ -->
+      <section class="view" id="view-missions" style="display:none">
+        <div class="card" style="margin-bottom:18px">
+          <div class="card-title">任務進度</div>
+          <p class="muted small">完成任務自動發回贈。分享 / 使用 / 邀請都係任務。</p>
+        </div>
+        <div id="mission-list" style="display:grid;gap:12px"></div>
+      </section>
+
+      <!-- ============ 獎勵 ============ -->
+      <section class="view" id="view-rewards" style="display:none">
+        <div class="kpis" style="margin-bottom:18px">
+          <div class="kpi hero"><small>可回贈積分</small><b id="rw-points">2,480</b></div>
+          <div class="kpi"><small>抽獎券</small><b id="rw-tickets">1 張</b></div>
+          <div class="kpi"><small>會員級別</small><b id="rw-tier">銀章</b></div>
+        </div>
+
+        <div class="card" style="margin-bottom:18px">
+          <div class="card-title">回贈記錄</div>
+          <div class="chips" style="margin-bottom:14px" id="ledger-tabs"></div>
+          <div class="ledger" id="ledger-list"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">里程碑階梯</div>
+          <div id="milestone-ladder"></div>
+        </div>
+      </section>
+
+      <!-- ============ 卡包 ============ -->
+      <section class="view" id="view-wallet" style="display:none">
+        <div style="max-width:440px;margin:0 auto">
+          <div class="wallet-pass" style="margin-bottom:22px">
+            <div class="top">
+              <div><b>推廣易 · 到店卡</b><br><small id="wp-name">@hkfoodie</small></div>
+              <span class="tag" style="background:#fff;color:var(--red-deep)" id="wp-tier-tag">銀章</span>
+            </div>
+            <div class="code" id="wp-code">U-00000</div>
+            <small style="color:#fff" id="wp-handle">tgy.hk/r/user</small>
+          </div>
+          <p class="muted small" style="text-align:center;margin-bottom:16px">面對面推薦時，俾朋友掃你嘅 referral QR，即刻變可追蹤 referral。</p>
+          <div class="qr-wrap"><canvas class="qr" id="wallet-qr" width="25" height="25"></canvas></div>
+          <div style="margin-top:18px;display:flex;gap:10px;justify-content:center">
+            <button class="btn btn-primary" onclick="copyReferral()">複製 referral</button>
+            <button class="btn btn-ghost" onclick="addWallet()">加入 Wallet</button>
+          </div>
+        </div>
+      </section>
+
+</main>
+
+<!-- ============ 分享 modal ============ -->
+<div class="modal-backdrop" id="share-modal" style="display:none" onclick="if(event.target===this)closeShare()">
+  <div class="modal">
+    <button class="close" onclick="closeShare()">×</button>
+    <h3 id="sm-title">分享著數</h3>
+    <p class="muted small" id="sm-sub" style="margin-bottom:14px">經你條 link 領券 / 用券，rebate 自動計你。</p>
+    <div class="ticket" id="sm-ticket"></div>
+    <div class="linkbox" style="margin-top:14px">
+      <small>你嘅 share link</small>
+      <div class="code" id="sm-link">tgy.hk/r/…</div>
+    </div>
+    <div class="stat-row" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px">
+      <div class="kpi"><small>你賺</small><b id="sm-earn">+120</b></div>
+      <div class="kpi"><small>朋友慳</small><b>9 折</b></div>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button class="btn btn-primary" style="flex:1" onclick="copyShare()">複製 link</button>
+      <button class="btn btn-dark" onclick="confirmShare()">完成分享 ✓</button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/data.js"></script>
+<script src="assets/icons.js"></script>
+<script>
+  const T = window.TGY;
+  const user = T.getUser();
+  if (!user) location.replace('index.html');
+  const state = T.loadState();
+  const save = () => T.saveState(state);
+
+  const VIEWS = {
+    overview: '首頁', deals: '著數', share: '我嘅 Link',
+    missions: '任務', rewards: '獎勵', wallet: '卡包',
+  };
+  const CATS = ['全部', '餐飲', '飲品', '美容', '健身', '生活'];
+  let cat = '全部';
+  let ledgerFilter = 'all';
+  let shareDeal = null;
+  let shareUrl = '';
+
+  const tier = T.TIERS[state.tier] || T.TIERS[0];
+  const permLink = () => T.makeShareUrl(user.handle);
+
+  /* ---------- navigation ---------- */
+  function go(view) {
+    Object.keys(VIEWS).forEach((k) => {
+      document.getElementById('view-' + k).style.display = (k === view) ? '' : 'none';
+    });
+    document.querySelectorAll('#site-links a').forEach((a) => {
+      a.classList.toggle('active', a.dataset.view === view);
+    });
+    document.getElementById('top-title').textContent = VIEWS[view];
+    if (view === 'deals') renderDeals();
+    if (view === 'share') renderLinks();
+    if (view === 'missions') renderMissions();
+    if (view === 'rewards') renderRewards();
+    if (view === 'wallet') renderWallet();
+  }
+  window.go = go;
+
+  /* ---------- overview ---------- */
+  function renderOverview() {
+    document.getElementById('ov-hello').textContent = user.handle;
+    document.getElementById('ov-tier').innerHTML = '<span style="width:7px;height:7px;border-radius:50%;background:' + tier.color + '"></span>' + tier.name + '會員 · 回贈 ' + tier.rate;
+    document.getElementById('ov-points').textContent = T.fmt(state.points);
+    document.getElementById('ov-referred').textContent = state.referred;
+    document.getElementById('ov-tickets').textContent = state.tickets + ' 張';
+    document.getElementById('ov-rate').textContent = tier.rate;
+
+    renderMilestoneProgress('ov-milestone');
+    document.getElementById('ov-ledger').innerHTML = ledgerHTML(state.ledger.slice(0, 3));
+  }
+
+  function renderMilestoneProgress(containerId) {
+    const next = T.MILESTONES.find((m) => !m.reached) || T.MILESTONES[T.MILESTONES.length - 1];
+    const pct = Math.min(100, Math.round(state.referred / next.n * 100));
+    document.getElementById(containerId).innerHTML = `
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px;font-size:14px">
+        <span>下個里程碑：帶 <b>${next.n}</b> 個客 → ${next.reward}</span>
+        <b class="mono">${state.referred} / ${next.n}</b>
+      </div>
+      <div class="bar thick"><i style="width:${pct}%"></i></div>
+      <div class="muted small" style="margin-top:8px">你仲差 <b style="color:var(--red-deep)">${Math.max(0, next.n - state.referred)} 個客</b> 就到下一個里程碑。</div>`;
+  }
+
+  /* ---------- deals ---------- */
+  function renderDealChips() {
+    document.getElementById('deal-chips').innerHTML = CATS.map((c) =>
+      `<button class="chip" aria-pressed="${c === cat}" onclick="setCat('${c}')">${c}</button>`).join('');
+  }
+  window.setCat = function (c) { cat = c; renderDealChips(); renderDeals(); };
+
+  function renderDeals() {
+    const q = (document.getElementById('deal-search').value || '').trim().toLowerCase();
+    const list = state.coupons.filter((d) => {
+      const okCat = cat === '全部' || d.cat === cat;
+      const okQ = !q || (d.shop + d.title + d.cond).toLowerCase().includes(q);
+      return okCat && okQ;
+    });
+    document.getElementById('deal-grid').innerHTML = list.length
+      ? list.map((d) => `
+        <div class="deal-card">
+          <div class="deal-photo ${d.tone}"><span class="photo-label">${T.esc(d.cat)}</span></div>
+          <div class="deal-body">
+            <div class="shop">${T.esc(d.shop)}</div>
+            <h3>${T.esc(d.title)}</h3>
+            <div class="cond">${T.esc(d.cond)}</div>
+            <div class="deal-foot">
+              <span class="earn">你賺 <b>+${d.rebate}</b> 分</span>
+              <button class="btn btn-primary btn-sm" onclick="openShare('${d.id}')">分享</button>
+            </div>
+          </div>
+        </div>`).join('')
+      : '<div class="card" style="grid-column:1/-1;text-align:center;color:var(--muted)">冇搵到相關著數</div>';
+  }
+
+  /* ---------- share modal ---------- */
+  window.openShare = function (id) {
+    shareDeal = state.coupons.find((d) => d.id === id);
+    if (!shareDeal) return;
+    shareUrl = T.makeShareUrl(user.handle, id);
+    document.getElementById('sm-title').textContent = '分享 · ' + shareDeal.title;
+    document.getElementById('sm-sub').textContent = shareDeal.shop + ' · ' + shareDeal.cond;
+    document.getElementById('sm-ticket').innerHTML = `
+      <div class="main"><div class="shop">${T.esc(shareDeal.shop)} <span class="tag">經 ${T.esc(user.handle)} 推薦</span></div>
+      <div class="title">${T.esc(shareDeal.title)}</div><div class="cond">${T.esc(shareDeal.cond)}</div></div>
+      <div class="stub">你賺<b>+${shareDeal.rebate}</b></div>`;
+    document.getElementById('sm-link').textContent = shareUrl;
+    document.getElementById('sm-earn').textContent = '+' + shareDeal.rebate;
+    document.getElementById('share-modal').style.display = 'grid';
+  };
+  window.closeShare = function () { document.getElementById('share-modal').style.display = 'none'; shareDeal = null; };
+  window.copyShare = function () { T.copyText(shareUrl); };
+  window.confirmShare = function () {
+    if (!shareDeal) return;
+    state.links.unshift({ couponId: shareDeal.id, title: shareDeal.title, url: shareUrl, created: new Date().toLocaleDateString('zh-HK') });
+    save();
+    T.toast('已分享 · 等朋友領券核銷');
+    closeShare();
+    renderLinks();
+  };
+
+  /* ---------- my links ---------- */
+  function renderLinks() {
+    document.getElementById('perm-link').textContent = permLink();
+    document.getElementById('perm-id').textContent = user.trackingId;
+    document.getElementById('sp-name').textContent = user.handle + ' 推薦';
+    document.getElementById('link-count').textContent = state.links.length;
+    document.getElementById('sp-deals').innerHTML = state.links.length
+      ? state.links.slice(0, 3).map((l) => {
+          const d = state.coupons.find((c) => c.id === l.couponId);
+          return '<div class="sp-item"><div><b>' + T.esc(d ? d.title : l.title) + '</b><small>' + T.esc(d ? d.shop : '') + '</small></div><button class="btn btn-primary btn-sm">領券</button></div>';
+        }).join('')
+      : '<p class="muted small" style="text-align:center;padding:16px">你仲未推薦任何著數，去「著數」頁揀張 share。</p>';
+    document.getElementById('link-list').innerHTML = state.links.length
+      ? state.links.map((l, i) => `
+        <div class="ledger-item">
+          <span class="ic">🔗</span>
+          <div class="body"><b>${T.esc(l.title)}</b><small>${T.esc(l.url)} · ${l.created}</small></div>
+          <button class="btn btn-ghost btn-sm" onclick="copyLink(${i})">複製</button>
+          <button class="btn btn-soft btn-sm" onclick="delLink(${i})">刪</button>
+        </div>`).join('')
+      : '<p class="muted small" style="text-align:center;padding:16px">仲未分享過著數。去「著數」揀張 coupon 分享啦。</p>';
+  }
+  window.copyPerm = function () { T.copyText(permLink()); };
+  window.copyReferral = function () { T.copyText(user.trackingId + ' · ' + permLink()); };
+  window.addWallet = function () { T.toast('已加入錢包（示範）'); };
+  window.sharePerm = function () { if (navigator.share) navigator.share({ title: user.handle + ' 推薦嘅著數', url: permLink() }).catch(()=>{}); else T.copyText(permLink()); };
+  window.copyLink = function (i) { T.copyText(state.links[i].url); };
+  window.delLink = function (i) { state.links.splice(i, 1); save(); renderLinks(); };
+
+  /* ---------- missions ---------- */
+  function renderMissions() {
+    document.getElementById('mission-list').innerHTML = T.MISSIONS.map((m) => {
+      const p = state.missionProgress[m.id] || 0;
+      const done = p >= m.target;
+      const claimed = state.missionClaimed[m.id];
+      const pct = Math.min(100, Math.round(p / m.target * 100));
+      return `<div class="mission-item">
+        <div class="row"><b>${T.esc(m.title)}</b><span class="num">${p} / ${m.target}</span></div>
+        <div class="bar"><i style="width:${pct}%"></i></div>
+        <div class="reward">獎勵：+${m.reward} 分
+          ${claimed ? '<span class="pill ok" style="margin-left:8px">✓ 已領取</span>'
+            : done ? `<button class="btn btn-primary btn-sm" style="float:right" onclick="claimMission('${m.id}')">領取 +${m.reward} 分</button>`
+            : `<span class="pill grey" style="float:right">進行中</span>`}
+        </div>
+      </div>`;
+    }).join('');
+  }
+  window.claimMission = function (id) {
+    const m = T.MISSIONS.find((x) => x.id === id);
+    if (!m || state.missionClaimed[id]) return;
+    state.points += m.reward;
+    state.missionClaimed[id] = true;
+    state.ledger.unshift({ id: 'm' + id, icon: '🎯', title: m.title, via: 'mission', pts: m.reward, status: 'ok', reason: '已入賬' });
+    save(); renderMissions(); renderOverview();
+    T.toast('已領取 +' + m.reward + ' 分');
+  };
+
+  /* ---------- rewards ---------- */
+  function renderLedgerTabs() {
+    const tabs = [['all', '全部'], ['ok', '已入賬'], ['hold', '凍結'], ['bad', '被拒']];
+    document.getElementById('ledger-tabs').innerHTML = tabs.map(([k, label]) =>
+      `<button class="chip" aria-pressed="${ledgerFilter === k}" onclick="setLedger('${k}')">${label}</button>`).join('');
+  }
+  window.setLedger = function (k) { ledgerFilter = k; renderLedgerTabs(); renderRewards(); };
+
+  function ledgerHTML(items) {
+    if (!items.length) return '<p class="muted small" style="text-align:center;padding:14px">暫無記錄</p>';
+    return items.map((l) => {
+      const st = l.status === 'ok' ? ['ok', '✓ 已入賬'] : l.status === 'hold' ? ['hold', '⏳ 凍結'] : ['bad', '✕ 被拒'];
+      return `<div class="ledger-item">
+        <span class="ic">${ICON(l.pts >= 0 ? 'coin' : 'refresh')}</span>
+        <div class="body"><b>${T.esc(l.title)}</b><small>${T.esc(l.via || '')} · ${T.esc(l.reason)}</small></div>
+        <span class="pill ${st[0]}">${st[1]}</span>
+        <span class="amt ${l.pts >= 0 ? 'pos' : 'neg'}">${l.pts >= 0 ? '+' : ''}${l.pts}</span>
+      </div>`;
+    }).join('');
+  }
+
+  function renderMilestoneLadder() {
+    document.getElementById('milestone-ladder').innerHTML = T.MILESTONES.map((m) => {
+      const hit = state.referred >= m.n;
+      return `<div class="ledger-item" style="${hit ? 'border-color:var(--red);box-shadow:3px 4px 0 var(--red)' : ''}">
+        <span class="ic" style="${hit ? 'background:var(--red);color:#fff' : ''}">${hit ? '✓' : m.n}</span>
+        <div class="body"><b>帶 ${m.n} 個客</b><small>${T.esc(m.reward)}</small></div>
+        <span class="muted small">${T.esc(m.cond)}</span>
+      </div>`;
+    }).join('');
+  }
+
+  function renderRewards() {
+    document.getElementById('rw-points').textContent = T.fmt(state.points);
+    document.getElementById('rw-tickets').textContent = state.tickets + ' 張';
+    document.getElementById('rw-tier').textContent = tier.name;
+    renderLedgerTabs();
+    const filtered = ledgerFilter === 'all' ? state.ledger : state.ledger.filter((l) => l.status === ledgerFilter);
+    document.getElementById('ledger-list').innerHTML = ledgerHTML(filtered);
+    renderMilestoneLadder();
+  }
+
+  /* ---------- wallet ---------- */
+  function renderWallet() {
+    document.getElementById('wp-name').textContent = user.handle;
+    document.getElementById('wp-code').textContent = user.trackingId;
+    document.getElementById('wp-handle').textContent = permLink();
+    document.getElementById('wp-tier-tag').innerHTML = '<span style="width:7px;height:7px;border-radius:50%;background:' + tier.color + '"></span>' + tier.name;
+    T.drawQR(document.getElementById('wallet-qr'), user.trackingId + ':' + user.handle);
+  }
+
+  /* ---------- boot ---------- */
+  function renderNav() {
+    const mono = (user.handle || user.name).replace(/^@/, '').charAt(0).toUpperCase();
+    document.getElementById('nav-avatar').textContent = mono;
+    document.getElementById('nav-name').textContent = user.handle;
+  }
+  window.toggleMenu = function () { document.getElementById('site-links').classList.toggle('open'); };
+  window.closeMenu = function () { document.getElementById('site-links').classList.remove('open'); };
+  document.getElementById('site-links').addEventListener('click', (e) => {
+    const a = e.target.closest('[data-view]');
+    if (a) { go(a.dataset.view); closeMenu(); }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.key === 'Escape') closeShare();
+  });
+
+  renderDealChips();
+  renderNav();
+  renderOverview();
+  go('overview');
+</script>
+</body>
+</html>

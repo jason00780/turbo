@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>推廣易｜香港著數分享平台 — 分享著數，帶到客自動分佣</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@400;500;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<nav class="site-nav">
+  <div class="sn-inner">
+    <a class="brand" href="index.html">
+      <span class="mark">推</span>
+      <span>推廣易<small>TUI</small></span>
+    </a>
+    <div class="site-links" id="site-links">
+      <a href="#deals">熱門著數</a>
+      <a href="#perks">著數禮遇</a>
+      <a href="#milestones">里程碑</a>
+      <a href="#how">使用方法</a>
+    </div>
+    <button class="burger" id="burger" onclick="toggleMenu()" aria-label="選單">☰</button>
+    <div class="nav-actions">
+      <button class="btn btn-ghost btn-sm" onclick="openAuth('merchant')">商戶加盟</button>
+      <button class="btn btn-primary btn-sm" onclick="openAuth('user')">推 會員登入／註冊</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <p class="eyebrow">✦ 香港著數分享平台</p>
+  <h1>分享著數，<span class="hl">帶到客自動分佣。</span></h1>
+  <p class="sub">商戶出 link，人人可分享。朋友經你條 link 領券、到店核銷，你自動賺 <b>rebate 或積分</b>。平台把「廣告費」變成「可追蹤、有成效先俾」嘅佣金分成。</p>
+
+  <form class="searchbar" onsubmit="searchDeals(event)">
+    <div class="sbox">
+      <span class="ico">⌕</span>
+      <input id="hero-search" placeholder="搵著數、店舖…">
+    </div>
+    <button class="btn btn-primary" type="submit">搜尋</button>
+  </form>
+
+  <div class="hot">
+    <span class="lbl">熱門：</span>
+    <button onclick="quickCat('餐飲')">餐飲</button>
+    <button onclick="quickCat('美容')">美容</button>
+    <button onclick="quickCat('健身')">健身</button>
+    <button onclick="quickCat('生活')">生活</button>
+  </div>
+
+  <div class="stats">
+    <div class="lstat"><b id="st-deals">8</b><span>個著數</span></div>
+    <div class="lstat"><b>2,480</b><span>積分可賺</span></div>
+    <div class="lstat"><b>4</b><span>級里程碑</span></div>
+  </div>
+</header>
+
+<!-- ============ 熱門著數 ============ -->
+<section class="sec" id="deals">
+  <div class="sec-head">
+    <div>
+      <p class="eyebrow">TUI DEALS</p>
+      <h2>熱門著數</h2>
+      <p class="lead">揀張 coupon 分享出去，朋友用咗你就賺。每張都直接連住著數易——領券、核銷、分佣一條龍。</p>
+    </div>
+    <a class="more" href="#perks">查看全部著數 →</a>
+  </div>
+  <div class="sec-body">
+    <div class="grid-3" id="hot-grid"></div>
+  </div>
+</section>
+
+<!-- ============ 著數禮遇 ============ -->
+<section class="sec" id="perks">
+  <div class="sec-head">
+    <div>
+      <p class="eyebrow">TUI PERKS</p>
+      <h2>著數禮遇</h2>
+      <p class="lead">目前 <b id="perks-count">8</b> 項公開著數</p>
+    </div>
+  </div>
+  <div class="sec-body">
+    <div class="chips" style="margin-bottom:12px" id="cat-chips"></div>
+    <div class="chips" style="margin-bottom:20px" id="dist-chips"></div>
+    <div class="grid-4" id="perks-grid"></div>
+    <div id="perks-empty" class="card" style="display:none;text-align:center;color:var(--muted)">
+      <h3 style="margin-bottom:6px">暫時未有公開著數</h3>
+      <p class="small">暫時未有相符著數；請調整篩選或稍後再試。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 里程碑 ============ -->
+<section class="sec band" id="milestones">
+  <div class="sec-head">
+    <div>
+      <p class="eyebrow on-dark">MILESTONES</p>
+      <h2>帶夠客，額外 bonus</h2>
+      <p class="lead">里程碑 bonus 係「額外」加喺每單 referral 之上，唔係取代。核銷成功 + 過退貨窗 + 朋友係新客先計數。</p>
+    </div>
+  </div>
+  <div class="sec-body">
+    <div class="m-progress-head" id="m-progress-head"></div>
+    <div class="m-steps" id="milestone-steps"></div>
+    <div class="m-table" id="milestone-table"></div>
+  </div>
+</section>
+
+<!-- ============ 使用方法 ============ -->
+<section class="sec" id="how">
+  <div class="sec-head">
+    <div>
+      <p class="eyebrow">三步解鎖</p>
+      <h2>分享、領券、分佣，就係咁簡單。</h2>
+      <p class="lead">拎專屬 link、朋友領券核銷、自動分佣。每筆 rebate 都喺你帳戶內安全保存並可追蹤狀態。</p>
+    </div>
+  </div>
+  <div class="sec-body">
+    <div class="steps-3">
+      <div class="step-card">
+        <div class="num">01</div>
+        <div class="ico" data-icon="link"></div>
+        <h3>分享 link</h3>
+        <p>成為會員拎一條專屬 share link，帶個人 tracking ID，分享俾朋友。</p>
+      </div>
+      <div class="step-card">
+        <div class="num">02</div>
+        <div class="ico" data-icon="ticket"></div>
+        <h3>朋友領券</h3>
+        <p>朋友經你條 link 領取著數易 coupon，唔使自己係會員都用得。</p>
+      </div>
+      <div class="step-card">
+        <div class="num">03</div>
+        <div class="ico" data-icon="coin"></div>
+        <h3>到店核銷你賺</h3>
+        <p>朋友到店出示 QR，店員一掃核銷，rebate 自動入你帳戶。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="mark">推</span>
+      <b>推廣易</b>
+      <span class="footer-tag" style="margin-left:4px">香港人的著數分享平台 · 分享、領券、分佣。</span>
+    </div>
+    <div class="footer-links">
+      <a href="#deals">熱門著數</a>
+      <a href="#perks">著數禮遇</a>
+      <a href="#milestones">里程碑</a>
+      <a href="#how">使用方法</a>
+      <a href="#" onclick="openAuth('merchant')">商戶加盟</a>
+      <a href="#" onclick="openAuth('user')">會員登入／註冊</a>
+    </div>
+    <div class="footer-bottom">
+      <span>著數易（黃）負責優惠 + 核銷 · 推廣易（紅）負責分享 + 回贈</span>
+      <span class="mono">© 2026 推廣易</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ AUTH MODAL ============ -->
+<div class="modal-backdrop" id="auth-modal" style="display:none" onclick="if(event.target===this)closeAuth()">
+  <div class="modal">
+    <button class="close" onclick="closeAuth()">×</button>
+    <h3 id="auth-title">登入 / 註冊</h3>
+    <p class="muted small" style="margin-bottom:18px">同一張表格：新帳號會自動建立，舊帳號直接登入。</p>
+    <div class="seg" style="margin-bottom:16px">
+      <button type="button" id="role-user" aria-pressed="true" onclick="setRole('user')">我係用戶</button>
+      <button type="button" id="role-merchant" aria-pressed="false" onclick="setRole('merchant')">我係商戶</button>
+    </div>
+    <div class="field"><label>名稱 / 店名</label>
+      <input class="input" id="f-name" placeholder="例如：@hkfoodie ／ 阿財冰室">
+    </div>
+    <div class="field"><label>電郵</label>
+      <input class="input" id="f-email" type="email" placeholder="you@example.com">
+    </div>
+    <div class="field"><label>密碼</label>
+      <input class="input" id="f-pass" type="password" placeholder="••••••••">
+    </div>
+    <button class="btn btn-primary btn-block" onclick="submitAuth()">繼續 →</button>
+
+    <div style="display:flex;align-items:center;gap:10px;margin:18px 0 14px">
+      <span style="flex:1;height:1px;background:var(--line)"></span>
+      <span class="muted small" style="font-family:var(--font-mono)">或</span>
+      <span style="flex:1;height:1px;background:var(--line)"></span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <button class="btn btn-ghost" onclick="demoLogin('user')"><span data-icon="zap"></span>一鍵登入 · 用戶</button>
+      <button class="btn btn-dark" onclick="demoLogin('merchant')"><span data-icon="zap"></span>一鍵登入 · 商戶</button>
+    </div>
+    <p class="small muted" style="margin-top:14px;text-align:center">純前端示範，帳號只存喺你部機（localStorage）。</p>
+  </div>
+</div>
+
+<script src="assets/data.js"></script>
+<script src="assets/icons.js"></script>
+<script>
+  const T = window.TGY;
+  let role = 'user';
+  let pcat = '全部', pdist = '全部', pquery = '';
+
+  /* ---------- auth ---------- */
+  function openAuth(r) { role = r || 'user'; setRole(role); document.getElementById('auth-modal').style.display = 'grid'; }
+  function closeAuth() { document.getElementById('auth-modal').style.display = 'none'; }
+  function setRole(r) {
+    role = r;
+    document.getElementById('role-user').setAttribute('aria-pressed', r === 'user');
+    document.getElementById('role-merchant').setAttribute('aria-pressed', r === 'merchant');
+    document.getElementById('auth-title').textContent = r === 'user' ? '用戶 · 登入 / 註冊' : '商戶 · 登入 / 註冊';
+    document.getElementById('f-name').placeholder = r === 'user' ? '例如：@hkfoodie' : '例如：阿財冰室';
+  }
+  function submitAuth() {
+    const name = document.getElementById('f-name').value.trim();
+    const email = document.getElementById('f-email').value.trim();
+    const pass = document.getElementById('f-pass').value;
+    if (!name) return T.toast('請填名稱 / 店名');
+    if (!email) return T.toast('請填電郵');
+    if (!pass) return T.toast('請填密碼');
+    finishLogin(name, email, role);
+  }
+  function demoLogin(r) {
+    if (r === 'merchant') finishLogin('阿財冰室', 'shop@demo.tgy', 'merchant');
+    else finishLogin('@hkfoodie', 'hkfoodie@demo.tgy', 'user');
+  }
+  function finishLogin(name, email, r) {
+    const isMerchant = r === 'merchant';
+    const handle = name.startsWith('@') ? name : '@' + name.replace(/\s+/g, '');
+    const user = {
+      name, email, handle, role: r,
+      trackingId: T.makeTrackingId(),
+      joined: new Date().toISOString().slice(0, 10),
+      shopName: isMerchant ? name : '',
+    };
+    T.setUser(user);
+    T.toast(isMerchant ? '商戶登入成功' : '登入成功，歡迎返嚟');
+    setTimeout(() => { location.href = isMerchant ? 'merchant.html' : 'dashboard.html'; }, 450);
+  }
+
+  /* ---------- nav ---------- */
+  function toggleMenu() { document.getElementById('site-links').classList.toggle('open'); }
+  document.querySelectorAll('#site-links a').forEach((a) => a.addEventListener('click', () => {
+    document.getElementById('site-links').classList.remove('open');
+  }));
+
+  /* ---------- helpers ---------- */
+  const districtOf = (d) => { const m = d.shop.split('·').pop(); return m ? m.trim() : '香港'; };
+  const districts = [...new Set(T.DEALS.map(districtOf))];
+  const cats = ['全部', ...new Set(T.DEALS.map((d) => d.cat))];
+
+  function offerCard(d) {
+    return `<div class="offer-card">
+      <div class="oc-top">
+        <span class="oc-tag">TUI</span>
+        <span class="oc-meta">${T.esc(d.cat)} · ${T.esc(districtOf(d))}</span>
+      </div>
+      <h3>${T.esc(d.title)}</h3>
+      <div class="oc-desc">${T.esc(d.shop)}<br>${T.esc(d.cond)}</div>
+      <div class="oc-earn">
+        <span class="earn">你賺 <b>+${d.rebate}</b> 分</span>
+        <button class="btn btn-primary btn-sm" onclick="shareDeal('${d.id}')">分享 →</button>
+      </div>
+    </div>`;
+  }
+  function shareDeal(id) { openAuth('user'); }
+
+  /* ---------- hot deals ---------- */
+  function renderHot() {
+    document.getElementById('hot-grid').innerHTML = T.DEALS.slice(0, 3).map(offerCard).join('');
+  }
+
+  /* ---------- perks + filters ---------- */
+  function renderChips() {
+    document.getElementById('cat-chips').innerHTML = cats.map((c) =>
+      `<button class="chip" aria-pressed="${c === pcat}" onclick="setCat('${c}')">${c === '全部' ? '全部類別' : c}</button>`).join('');
+    document.getElementById('dist-chips').innerHTML = ['全部', ...districts].map((d) =>
+      `<button class="chip" aria-pressed="${d === pdist}" onclick="setDist('${d}')">${d === '全部' ? '全部地區' : d}</button>`).join('');
+  }
+  window.setCat = function (c) { pcat = c; renderChips(); renderPerks(); };
+  window.setDist = function (d) { pdist = d; renderChips(); renderPerks(); };
+
+  function renderPerks() {
+    const q = pquery.toLowerCase();
+    const list = T.DEALS.filter((d) => {
+      const okCat = pcat === '全部' || d.cat === pcat;
+      const okDist = pdist === '全部' || districtOf(d) === pdist;
+      const okQ = !q || (d.shop + d.title + d.cond + d.cat).toLowerCase().includes(q);
+      return okCat && okDist && okQ;
+    });
+    document.getElementById('perks-count').textContent = list.length;
+    document.getElementById('perks-grid').innerHTML = list.map(offerCard).join('');
+    document.getElementById('perks-empty').style.display = list.length ? 'none' : '';
+  }
+
+  /* ---------- search ---------- */
+  function searchDeals(e) {
+    if (e) e.preventDefault();
+    pquery = document.getElementById('hero-search').value.trim();
+    renderPerks();
+    document.getElementById('perks').scrollIntoView({ behavior: 'smooth' });
+  }
+  function quickCat(c) {
+    pcat = c; renderChips(); renderPerks();
+    document.getElementById('perks').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  /* ---------- milestones ---------- */
+  function renderMilestones() {
+    const cur = 2; // 示範：你而家累計帶客
+    const nextIdx = T.MILESTONES.findIndex((m) => cur < m.n);
+    const next = T.MILESTONES[nextIdx];
+    document.getElementById('m-progress-head').innerHTML =
+      '<span>你而家：<b>' + cur + ' 個客</b></span>' +
+      '<span>差 <b>' + (next.n - cur) + ' 個客</b> 就到下一個里程碑 → ' + T.esc(next.reward) + '</span>';
+    document.getElementById('milestone-steps').innerHTML = T.MILESTONES.map((m, i) => {
+      const reached = cur >= m.n;
+      const isNext = i === nextIdx;
+      return '<div class="m-step' + (reached ? ' reached' : '') + (isNext ? ' next' : '') + '">' +
+        '<div class="m-node">' + (reached ? '✓' : m.n) + '</div>' +
+        '<div class="m-lbl"><b>帶 ' + m.n + ' 個客</b><small>' + T.esc(m.reward) + '</small></div>' +
+      '</div>';
+    }).join('');
+    document.getElementById('milestone-table').innerHTML =
+      '<div class="m-trow head"><div>累計帶客</div><div>獎勵</div><div>條件</div></div>' +
+      T.MILESTONES.map((m) =>
+        '<div class="m-trow">' +
+          '<div class="m-tqty"><b>' + m.n + '</b><span>個客</span></div>' +
+          '<div>' + T.esc(m.reward) + '</div>' +
+          '<div class="m-cond">' + T.esc(m.cond) + '</div>' +
+        '</div>').join('');
+  }
+
+  /* ---------- boot ---------- */
+  document.getElementById('st-deals').textContent = T.DEALS.length;
+  renderHot();
+  renderChips();
+  renderPerks();
+  renderMilestones();
+  setRole('user');
+</script>
+</body>
+</html>

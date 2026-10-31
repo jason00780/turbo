@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="zh-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>推廣易 · 商戶版</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@400;500;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="sn-inner">
+    <a class="brand" href="index.html">
+      <span class="mark">推</span>
+      <span>推廣易<small>MERCHANT</small></span>
+    </a>
+    <div class="site-links app-links" id="site-links">
+      <a data-view="overview" class="active"><span data-icon="chart"></span>概覽</a>
+      <a data-view="create"><span data-icon="link"></span>出 Link</a>
+      <a data-view="report"><span data-icon="doc"></span>報表</a>
+      <a data-view="stock"><span data-icon="ticket"></span>著數庫存</a>
+    </div>
+    <button class="burger" id="burger" onclick="toggleMenu()" aria-label="選單">☰</button>
+    <div class="nav-actions">
+      <span class="nav-user"><span class="avatar"><i id="nav-avatar">店</i></span><b id="nav-name">商戶</b></span>
+      <button class="btn btn-ghost btn-sm" onclick="TGY.logout()">登出</button>
+    </div>
+  </div>
+</nav>
+
+<main class="app-main">
+  <header class="app-head">
+    <div class="crumb">推廣易 · 商戶版</div>
+    <h1 id="top-title">概覽</h1>
+  </header>
+
+      <!-- ============ 概覽 ============ -->
+      <section class="view" id="view-overview">
+        <div class="card hard pad-lg" style="margin-bottom:18px">
+          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px">
+            <div>
+              <div class="muted small">商戶</div>
+              <h2 style="font-size:26px" id="ov-shop">阿財冰室</h2>
+              <span class="tag">Phase 1 免費入門</span>
+            </div>
+            <button class="btn btn-primary" onclick="go('create')">出新 link →</button>
+          </div>
+        </div>
+
+        <div class="kpis" style="margin-bottom:18px">
+          <div class="kpi hero"><small>總帶客</small><b id="ov-brought">0</b></div>
+          <div class="kpi"><small>已核銷</small><b id="ov-redeemed">0</b></div>
+          <div class="kpi"><small>佣金支出</small><b id="ov-fee">$0</b></div>
+        </div>
+
+        <div class="card" style="margin-bottom:18px">
+          <div class="card-title">帶客排行榜</div>
+          <table class="table" id="ov-table"></table>
+        </div>
+
+        <div class="card">
+          <div class="card-title">點解用推廣易？</div>
+          <div style="display:grid;gap:10px">
+            <div class="ledger-item"><span class="ic" data-icon="gift"></span><div class="body"><b>免費入門，先聚量</b><small>冇客核銷就唔使俾，成效先俾錢。</small></div></div>
+            <div class="ledger-item"><span class="ic" data-icon="coin"></span><div class="body"><b>回贈資金 = 佣金再分配</b><small>平台唔使自己燒錢補貼。</small></div></div>
+            <div class="ledger-item"><span class="ic" data-icon="chart"></span><div class="body"><b>可追蹤，有成效先俾</b><small>邊個帶咗幾多客，報表一眼睇晒。</small></div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 出 Link ============ -->
+      <section class="view" id="view-create" style="display:none">
+        <div class="card hard pad-lg" style="max-width:560px">
+          <h3 style="font-size:20px;margin-bottom:6px">出一條「人人用得」嘅 Share Link</h3>
+          <p class="muted small" style="margin-bottom:18px">對方唔使係會員，經 link 領券 / 用券，referral 自動記錄。</p>
+          <div class="field"><label>掛住著數易 coupon</label>
+            <select class="select" id="c-coupon"></select>
+          </div>
+          <div class="field"><label>每帶一位客核銷，俾幾多佣金？</label>
+            <div class="seg" id="c-fee">
+              <button type="button" data-v="10">$10</button>
+              <button type="button" data-v="15" aria-pressed="true">$15</button>
+              <button type="button" data-v="20">$20</button>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-block" onclick="createLink()">生成 Share Link</button>
+
+          <div id="c-result" style="display:none;margin-top:20px">
+            <div class="linkbox">
+              <small>你嘅商戶 share link</small>
+              <div class="code" id="c-link">tgy.hk/m/…</div>
+            </div>
+            <div style="display:flex;gap:10px;margin-top:14px">
+              <button class="btn btn-primary btn-sm" style="flex:1" onclick="copyMerchantLink()">複製 link</button>
+              <button class="btn btn-ghost btn-sm" onclick="go('report')">睇報表</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ 報表 ============ -->
+      <section class="view" id="view-report" style="display:none">
+        <div class="card">
+          <div class="card-title">Referral 報表 <span class="tag">今個月</span></div>
+          <div class="kpis" style="margin-bottom:16px;grid-template-columns:repeat(4,1fr)">
+            <div class="kpi"><small>分享者</small><b id="rp-users">0</b></div>
+            <div class="kpi"><small>總帶客</small><b id="rp-brought">0</b></div>
+            <div class="kpi"><small>已核銷</small><b id="rp-redeemed">0</b></div>
+            <div class="kpi"><small>佣金支出</small><b id="rp-fee">$0</b></div>
+          </div>
+          <table class="table" id="rp-table"></table>
+          <p class="muted small" style="margin-top:14px">示範數字。每帶一位客核銷，商戶俾佣金：分享者分 ⅔，平台收 ⅓。</p>
+        </div>
+      </section>
+
+      <!-- ============ 著數庫存 ============ -->
+      <section class="view" id="view-stock" style="display:none">
+        <div class="card" style="margin-bottom:16px">
+          <div class="card-title">著數易現有 coupon</div>
+          <p class="muted small">呢啲係著數易交入嚟嘅優惠，掛 tracking 就變成推廣易 share link。</p>
+        </div>
+        <div class="deal-grid" id="stock-grid"></div>
+      </section>
+
+</main>
+
+<script src="assets/data.js"></script>
+<script src="assets/icons.js"></script>
+<script>
+  const T = window.TGY;
+  const user = T.getUser();
+  if (!user) location.replace('index.html');
+  const state = T.loadState();
+  const save = () => T.saveState(state);
+
+  const VIEWS = { overview: '概覽', create: '出 Link', report: '報表', stock: '著數庫存' };
+  let fee = 15;
+  let merchantLink = '';
+
+  function go(view) {
+    Object.keys(VIEWS).forEach((k) => {
+      document.getElementById('view-' + k).style.display = (k === view) ? '' : 'none';
+    });
+    document.querySelectorAll('#site-links a').forEach((a) => {
+      a.classList.toggle('active', a.dataset.view === view);
+    });
+    document.getElementById('top-title').textContent = VIEWS[view];
+    if (view === 'overview') renderOverview();
+    if (view === 'report') renderReport();
+    if (view === 'stock') renderStock();
+  }
+  window.go = go;
+
+  function totals() {
+    const brought = state.referrals.reduce((a, r) => a + r.brought, 0);
+    const redeemed = state.referrals.reduce((a, r) => a + r.redeemed, 0);
+    return { brought, redeemed, fee: redeemed * 15 };
+  }
+
+  function renderOverview() {
+    document.getElementById('ov-shop').textContent = user.shopName || user.name;
+    const t = totals();
+    document.getElementById('ov-brought').textContent = t.brought;
+    document.getElementById('ov-redeemed').textContent = t.redeemed;
+    document.getElementById('ov-fee').textContent = T.money(t.fee);
+    document.getElementById('ov-table').innerHTML = reportTableHTML();
+  }
+
+  function reportTableHTML() {
+    const rows = [...state.referrals].sort((a, b) => b.brought - a.brought);
+    return `<thead><tr><th>用戶</th><th class="r">帶客</th><th class="r">核銷</th><th class="r">狀態</th></tr></thead>
+    <tbody>${rows.map((r) => `
+      <tr><td><b style="color:var(--red-deep)">${T.esc(r.user)}</b></td>
+      <td class="r num">${r.brought}</td><td class="r num">${r.redeemed}</td>
+      <td class="r"><span class="pill ${r.status === 'active' ? 'ok' : 'hold'}">${r.status === 'active' ? '活躍' : '凍結'}</span></td></tr>`).join('')}
+    </tbody>`;
+  }
+
+  function renderReport() {
+    const t = totals();
+    document.getElementById('rp-users').textContent = state.referrals.length;
+    document.getElementById('rp-brought').textContent = t.brought;
+    document.getElementById('rp-redeemed').textContent = t.redeemed;
+    document.getElementById('rp-fee').textContent = T.money(t.fee);
+    document.getElementById('rp-table').innerHTML = reportTableHTML();
+  }
+
+  /* ---------- create link ---------- */
+  function renderCouponSelect() {
+    document.getElementById('c-coupon').innerHTML = state.coupons.map((d) =>
+      `<option value="${d.id}">${d.shop} — ${d.title}（每張你賺 ${d.rebate} 分）</option>`).join('');
+  }
+  document.getElementById('c-fee').addEventListener('click', (e) => {
+    const b = e.target.closest('button'); if (!b) return;
+    fee = Number(b.dataset.v);
+    document.querySelectorAll('#c-fee button').forEach((x) => x.setAttribute('aria-pressed', x === b));
+  });
+
+  window.createLink = function () {
+    const cid = document.getElementById('c-coupon').value;
+    const shop = T.slug(user.shopName || user.name);
+    merchantLink = `tgy.hk/m/${shop}?c=${cid}`;
+    const deal = state.coupons.find((d) => d.id === cid);
+    state.merchantLinks.unshift({ couponId: cid, title: deal ? deal.title : cid, url: merchantLink, fee, created: new Date().toLocaleDateString('zh-HK') });
+    save();
+    document.getElementById('c-link').textContent = merchantLink;
+    document.getElementById('c-result').style.display = 'block';
+    T.toast('Link 已生成 · 人人用得');
+  };
+  window.copyMerchantLink = function () { T.copyText(merchantLink); };
+
+  /* ---------- stock ---------- */
+  function renderStock() {
+    document.getElementById('stock-grid').innerHTML = state.coupons.map((d) => `
+      <div class="deal-card">
+        <div class="deal-photo ${d.tone}"><span class="photo-label">${T.esc(d.cat)}</span></div>
+        <div class="deal-body">
+          <div class="shop">${T.esc(d.shop)}</div>
+          <h3>${T.esc(d.title)}</h3>
+          <div class="cond">${T.esc(d.cond)} · 剩 ${d.stock} 張</div>
+          <div class="deal-foot">
+            <span class="earn">分享者賺 <b>+${d.rebate}</b> 分</span>
+            <button class="btn btn-ghost btn-sm" onclick="attachCoupon('${d.id}')">掛上 link</button>
+          </div>
+        </div>
+      </div>`).join('');
+  }
+  window.attachCoupon = function (id) {
+    go('create');
+    document.getElementById('c-coupon').value = id;
+    T.toast('已揀好 coupon，撳「生成 Share Link」');
+  };
+
+  /* ---------- boot ---------- */
+  function renderNav() {
+    const mono = (user.shopName || user.name || '店').charAt(0);
+    document.getElementById('nav-avatar').textContent = mono;
+    document.getElementById('nav-name').textContent = user.shopName || user.name;
+  }
+  window.toggleMenu = function () { document.getElementById('site-links').classList.toggle('open'); };
+  window.closeMenu = function () { document.getElementById('site-links').classList.remove('open'); };
+  document.getElementById('site-links').addEventListener('click', (e) => {
+    const a = e.target.closest('[data-view]');
+    if (a) { go(a.dataset.view); closeMenu(); }
+  });
+
+  renderCouponSelect();
+  renderNav();
+  renderOverview();
+  go('overview');
+</script>
+</body>
+</html>

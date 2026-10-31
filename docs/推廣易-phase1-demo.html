@@ -1,0 +1,888 @@
+<!doctype html>
+<html lang="zh-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>推廣易 · Phase 1 示範 — 著數易嘅帶客引擎</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+HK:wght@400;500;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* 推廣易 brand — red */
+    --red:       #e2302f;
+    --red-deep:  #b91c1c;
+    --red-ink:   #7f1d1d;
+    --red-soft:  #fdeaea;
+    --red-line:  #f3c6c6;
+
+    /* 著數易 brand — yellow (used only for the connection) */
+    --yellow:    #f7d100;
+    --yellow-ink:#3a3200;
+
+    --ink:   #1b1412;
+    --paper: #fdfaf8;
+    --cream: #f6efe9;
+    --line:  #e9dcd3;
+    --dark:  #2a1612;
+    --dark-2:#1f110e;
+    --muted: #7c6a61;
+    --green: #2f7d4f;
+
+    --font-display: 'Noto Sans HK', 'PingFang HK', 'PingFang TC', 'Heiti TC', 'Microsoft JhengHei', system-ui, sans-serif;
+    --font-mono: 'DM Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+    --ease-out: cubic-bezier(.22,.8,.25,1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font-display);
+    color: var(--ink);
+    background: var(--paper);
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  ::selection { background: var(--red); color: #fff; }
+  a { color: inherit; text-decoration: none; }
+  button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; }
+  button:focus-visible, a:focus-visible { outline: 3px solid var(--red); outline-offset: 2px; }
+  em { font-style: normal; color: var(--red); }
+
+  .wrap { max-width: 1220px; margin: 0 auto; padding: 0 clamp(20px, 4vw, 48px); }
+  .eyebrow {
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: .22em;
+    font-size: 12px;
+    color: var(--red);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .eyebrow::before { content: "✦"; font-size: 11px; }
+  .eyebrow.on-dark { color: #ff8a87; }
+  h1, h2, h3 { font-weight: 800; letter-spacing: -2px; line-height: 1.12; text-wrap: balance; }
+  .section-head { max-width: 720px; }
+  .section-head h2 { font-size: clamp(30px, 4.5vw, 48px); margin-top: 14px; }
+  .section-head p { color: var(--muted); font-size: 17px; margin-top: 14px; }
+
+  /* ---------- Nav ---------- */
+  nav {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(253, 250, 248, .86);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner { display: flex; align-items: center; gap: 28px; height: 68px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 900; letter-spacing: -1px; }
+  .brand .mark {
+    width: 34px; height: 34px; border-radius: 9px 9px 9px 3px;
+    background: var(--red); color: #fff; display: grid; place-items: center;
+    font-size: 18px; font-weight: 900; box-shadow: 3px 4px 0 var(--ink);
+  }
+  .brand small { font-family: var(--font-mono); font-weight: 400; color: var(--muted); letter-spacing: .08em; font-size: 11px; display: block; margin-top: -2px; }
+  .nav-links { display: flex; gap: 26px; margin-left: auto; font-size: 15px; font-weight: 500; }
+  .nav-links a { color: var(--muted); transition: color .18s var(--ease-out); }
+  .nav-links a:hover { color: var(--ink); }
+  .nav-cta {
+    background: var(--red); color: #fff; font-weight: 800; font-size: 15px;
+    padding: 10px 20px; border-radius: 999px; transition: transform .18s var(--ease-out);
+  }
+  .nav-cta:hover { transform: translateY(-2px); }
+
+  /* ---------- Hero ---------- */
+  .hero { position: relative; overflow: hidden; padding: clamp(56px, 9vw, 120px) 0 0; }
+  .hero::before {
+    content: ""; position: absolute; inset: 0; z-index: -1;
+    background:
+      radial-gradient(560px 420px at 82% 8%, rgba(226,48,47,.12), transparent 60%),
+      radial-gradient(420px 360px at 10% 30%, rgba(247,209,0,.10), transparent 60%);
+  }
+  .hero-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: clamp(32px, 5vw, 64px); align-items: center; }
+  .hero h1 { font-size: clamp(38px, 6vw, 68px); font-weight: 900; letter-spacing: -3px; }
+  .hero h1 .fill {
+    display: inline-block; background: var(--red); color: #fff;
+    padding: 0 .35em; border-radius: 14px 14px 14px 4px;
+    box-shadow: 7px 8px 0 var(--ink);
+  }
+  .hero .sub { font-size: clamp(17px, 2vw, 20px); color: var(--muted); margin-top: 22px; max-width: 30em; }
+  .hero .sub b { color: var(--ink); }
+  .hero-ctas { display: flex; gap: 14px; margin-top: 32px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px; font-weight: 800; font-size: 16px;
+    padding: 14px 26px; border-radius: 999px; transition: transform .18s var(--ease-out), box-shadow .18s var(--ease-out), border-color .18s var(--ease-out);
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn.primary { background: var(--red); color: #fff; box-shadow: 6px 7px 0 var(--ink); }
+  .btn.primary:hover { box-shadow: 4px 5px 0 var(--ink); }
+  .btn.ghost { border: 1.5px solid var(--line); color: var(--ink); background: #fff; }
+  .btn.ghost:hover { border-color: var(--red); }
+  .hero-meta { display: flex; gap: 26px; margin-top: 40px; flex-wrap: wrap; }
+  .hero-meta div { font-family: var(--font-mono); font-size: 12px; color: var(--muted); letter-spacing: .08em; }
+  .hero-meta b { display: block; font-family: var(--font-display); font-size: 22px; font-weight: 800; color: var(--ink); letter-spacing: -1px; }
+
+  /* hero visual — phone + flow card */
+  .hero-visual { position: relative; }
+  .phone {
+    background: var(--ink); border-radius: 40px; padding: 14px;
+    box-shadow: 0 40px 80px -30px rgba(27,20,18,.5), 12px 14px 0 var(--red);
+    transform: rotate(1.5deg); max-width: 380px; margin: 0 auto;
+  }
+  .phone-screen {
+    background: var(--paper); border-radius: 28px; overflow: hidden; min-height: 560px;
+    display: flex; flex-direction: column;
+  }
+  .phone-top { display: flex; justify-content: space-between; align-items: center; padding: 16px 18px 10px; }
+  .phone-top b { font-size: 15px; letter-spacing: -0.5px; }
+  .phone-top .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--red); }
+  .mini-balance { margin: 0 18px; padding: 16px; border-radius: 18px 18px 18px 6px; background: var(--ink); color: #fff; }
+  .mini-balance small { font-family: var(--font-mono); font-size: 11px; color: #cbb4ae; letter-spacing: .1em; }
+  .mini-balance b { display: block; font-size: 34px; letter-spacing: -1px; color: #ff8a87; }
+  .mini-balance span { font-size: 13px; color: #cbb4ae; }
+  .mini-card { margin: 14px 18px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 14px; }
+  .mini-card .row { display: flex; justify-content: space-between; align-items: center; font-size: 13px; }
+  .mini-card .row b { font-size: 15px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 99px; background: var(--red-soft); color: var(--red-deep); }
+  .mini-bar { height: 8px; background: var(--cream); border-radius: 99px; overflow: hidden; margin-top: 10px; }
+  .mini-bar i { display: block; height: 100%; background: var(--red); border-radius: 99px; }
+  .mini-ticket { margin: 0 18px; border: 1px dashed var(--red-line); border-radius: 14px; padding: 14px 16px; background: var(--red-soft); position: relative; }
+  .mini-ticket .shop { font-size: 12px; color: var(--muted); }
+  .mini-ticket b { font-size: 18px; letter-spacing: -0.5px; }
+  .mini-ticket .cond { font-size: 12px; color: var(--muted); }
+
+  .flow-chip {
+    position: absolute; right: -8px; bottom: 40px; z-index: 2;
+    background: #fff; border: 1px solid var(--line); border-radius: 18px 18px 18px 5px;
+    padding: 14px 18px; box-shadow: 7px 8px 0 var(--yellow); transform: rotate(-3deg);
+    font-size: 13px; max-width: 240px;
+  }
+  .flow-chip b { font-size: 15px; }
+  .flow-chip .arrow { color: var(--red); font-weight: 900; }
+
+  /* ---------- flow strip ---------- */
+  .strip { background: var(--dark); color: #fff; padding: 46px 0; border-top: 1px solid var(--red-ink); border-bottom: 1px solid var(--red-ink); }
+  .strip-inner { display: flex; align-items: center; justify-content: center; gap: clamp(14px, 3vw, 40px); flex-wrap: wrap; }
+  .strip-step { display: flex; align-items: center; gap: 12px; }
+  .strip-step .n { width: 40px; height: 40px; border-radius: 50%; background: var(--red); display: grid; place-items: center; font-weight: 900; font-family: var(--font-mono); }
+  .strip-step b { font-size: 17px; letter-spacing: -0.5px; }
+  .strip-step small { display: block; color: #cbb4ae; font-size: 13px; }
+  .strip-arrow { font-size: 26px; color: #ff8a87; font-weight: 900; }
+
+  /* ---------- system diagram ---------- */
+  .system { padding: clamp(60px, 8vw, 100px) 0; }
+  .system-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 46px; }
+  .lane { border-radius: 22px 22px 22px 6px; border: 1px solid var(--line); background: #fff; overflow: hidden; }
+  .lane-head { padding: 16px 18px; font-weight: 800; letter-spacing: -0.5px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 10px; }
+  .lane-head .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .lane-body { padding: 14px; display: grid; gap: 10px; }
+  .node { border: 1px solid var(--line); border-radius: 12px; padding: 11px 13px; font-size: 13px; background: var(--paper); }
+  .node b { font-size: 14px; letter-spacing: -0.3px; }
+  .node small { display: block; color: var(--muted); font-size: 12px; line-height: 1.5; margin-top: 2px; }
+  .lane.user .lane-head { color: var(--ink); }
+  .lane.user .dot { background: var(--ink); }
+  .lane.promo { border-color: var(--red); border-width: 2px; background: linear-gradient(180deg, #fff, #fffdfd); }
+  .lane.promo .lane-head { background: var(--red); color: #fff; }
+  .lane.promo .dot { background: #fff; }
+  .lane.promo .node { border-color: var(--red-line); background: #fff; }
+  .lane.promo .node b { color: var(--red-deep); }
+  .lane.jetso { border-color: #e6cf2e; }
+  .lane.jetso .lane-head { background: var(--yellow); color: var(--yellow-ink); }
+  .lane.jetso .dot { background: var(--yellow-ink); }
+  .lane.jetso .node { border-color: #e6d55e; background: #fffdf0; }
+  .lane.merchant .lane-head { color: var(--ink); }
+  .lane.merchant .dot { background: var(--muted); }
+  .lane .connector { font-family: var(--font-mono); font-size: 11px; color: var(--muted); text-align: center; padding: 2px 0; letter-spacing: .05em; }
+  .lane .connector .flow { color: var(--red); font-weight: 700; }
+  .system-note { margin-top: 26px; font-size: 14px; color: var(--muted); display: flex; gap: 20px; flex-wrap: wrap; }
+  .system-note span { display: inline-flex; align-items: center; gap: 7px; }
+  .system-note i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+  .sys-red { background: var(--red); }
+  .sys-yellow { background: var(--yellow); }
+  .sys-ink { background: var(--ink); }
+
+  /* ---------- interactive demo ---------- */
+  .demo { background: var(--dark); color: #fff; padding: clamp(60px, 8vw, 110px) 0; position: relative; overflow: hidden; }
+  .demo::before {
+    content: ""; position: absolute; inset: 0;
+    background: radial-gradient(600px 420px at 15% 20%, rgba(226,48,47,.18), transparent 60%);
+  }
+  .demo .section-head { position: relative; }
+  .demo .section-head h2 em { color: #ff8a87; }
+  .demo-grid { display: grid; grid-template-columns: minmax(280px, 380px) 1fr; gap: clamp(32px, 5vw, 72px); margin-top: 50px; align-items: start; position: relative; }
+  .demo-steps { list-style: none; display: grid; gap: 6px; position: sticky; top: 90px; }
+  .demo-step {
+    width: 100%; text-align: left; display: grid; grid-template-columns: 40px 1fr; gap: 14px;
+    padding: 14px 16px; border-radius: 16px; color: #b9a49d; transition: background .2s var(--ease-out), color .2s var(--ease-out);
+  }
+  .demo-step .n {
+    width: 40px; height: 40px; border-radius: 50%; border: 2px solid currentColor;
+    display: grid; place-items: center; font-family: var(--font-mono); font-weight: 700; font-size: 15px;
+  }
+  .demo-step h3 { font-size: 18px; letter-spacing: -0.5px; }
+  .demo-step p { font-size: 13.5px; line-height: 1.6; margin-top: 4px; display: none; }
+  .demo-step[aria-current="step"] { background: #3d211c; color: #fff; }
+  .demo-step[aria-current="step"] .n { background: var(--red); border-color: var(--red); color: #fff; }
+  .demo-step[aria-current="step"] p { display: block; color: #d9c5be; }
+  .demo-step.done .n { background: var(--green); border-color: var(--green); color: #fff; }
+
+  .demo-phone {
+    background: #0f0a09; border-radius: 42px; padding: 14px;
+    box-shadow: 0 40px 90px -25px rgba(0,0,0,.6), 12px 14px 0 rgba(226,48,47,.35);
+    max-width: 400px; width: 100%; margin: 0 auto;
+  }
+  .demo-screen { background: var(--paper); border-radius: 30px; overflow: hidden; display: flex; flex-direction: column; height: 620px; }
+  .ds-top { padding: 18px 20px 14px; border-bottom: 1px solid var(--line); }
+  .ds-top small { color: var(--muted); font-size: 12.5px; }
+  .ds-top h3 { font-size: 20px; margin-top: 2px; color: var(--ink); }
+  .ds-body { flex: 1; overflow-y: auto; padding: 18px 20px 20px; }
+  .ds-body[hidden] { display: none; }
+  .p-cta {
+    width: 100%; padding: 15px; border-radius: 14px; background: var(--red); color: #fff;
+    font-size: 16.5px; font-weight: 800; margin-top: 16px; transition: transform .16s var(--ease-out);
+  }
+  .p-cta:hover { transform: translateY(-1px); }
+  .p-cta.ghost { background: var(--red-soft); color: var(--red-deep); }
+  .p-cta.dark { background: var(--ink); color: #fff; }
+  .p-note { font-size: 12.5px; color: var(--muted); line-height: 1.6; margin-top: 12px; }
+
+  /* demo widgets */
+  .plan { border: 2px solid var(--red); border-radius: 18px 18px 18px 6px; padding: 18px; box-shadow: 6px 7px 0 var(--red); background: #fff; }
+  .plan .price { font-size: 34px; font-weight: 900; letter-spacing: -1px; color: var(--red); font-family: var(--font-mono); }
+  .plan ul { list-style: none; margin-top: 12px; display: grid; gap: 7px; }
+  .plan li { font-size: 14px; display: flex; gap: 8px; }
+  .plan li::before { content: "✓"; color: var(--red); font-weight: 900; }
+  .linkbox { border: 2px solid var(--red); background: var(--red-soft); border-radius: 16px; padding: 16px; text-align: center; }
+  .linkbox .code { font-family: var(--font-mono); font-size: 22px; font-weight: 700; color: var(--red-deep); letter-spacing: 1px; word-break: break-all; }
+  .linkbox small { color: var(--muted); font-size: 12.5px; }
+  .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+  .stat { background: var(--cream); border-radius: 12px; padding: 10px; text-align: center; }
+  .stat b { display: block; font-size: 20px; font-family: var(--font-mono); }
+  .stat small { font-size: 11.5px; color: var(--muted); }
+  .mission { display: grid; gap: 10px; }
+  .mission-item { border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; }
+  .mission-item .row { display: flex; justify-content: space-between; font-size: 14px; }
+  .mission-item .row b { font-family: var(--font-mono); font-size: 13px; }
+  .share-row { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 14px; }
+  .share-btn { padding: 12px; border-radius: 12px; border: 1.5px solid var(--line); font-weight: 700; font-size: 14px; }
+  .share-btn.wa { background: #e6f4e9; border-color: #bcdcc5; color: #1f6b3b; }
+  .share-btn.ig { background: #fbe9f0; border-color: #f0c4d8; color: #a3325f; }
+  .ticket { display: grid; grid-template-columns: 1fr 78px; background: var(--red-soft); border-radius: 14px; position: relative; margin: 4px 0; border: 1px solid var(--red-line); }
+  .ticket::before, .ticket::after { content: ""; position: absolute; left: calc(100% - 78px - 9px); width: 18px; height: 18px; border-radius: 50%; background: var(--paper); }
+  .ticket::before { top: -9px; }
+  .ticket::after { bottom: -9px; }
+  .ticket .main { padding: 16px 14px 14px; border-right: 2px dashed var(--red-line); }
+  .ticket .shop { font-size: 12px; color: var(--muted); }
+  .ticket .title { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+  .ticket .cond { font-size: 12.5px; color: var(--muted); margin-top: 3px; }
+  .ticket .stub { display: grid; place-items: center; text-align: center; font-size: 11px; color: var(--muted); padding: 8px; }
+  .ticket .stub b { display: block; font-family: var(--font-mono); font-size: 20px; color: var(--red-deep); }
+  .via { font-size: 13px; color: var(--muted); text-align: center; margin-bottom: 8px; }
+  .qrwrap { display: grid; place-items: center; margin: 10px 0; }
+  .qr { width: 180px; height: 180px; border-radius: 12px; border: 2px solid var(--ink); image-rendering: pixelated; }
+  .stamp {
+    width: 130px; height: 130px; margin: 8px auto 12px; border: 5px solid var(--red); border-radius: 50%;
+    display: grid; place-items: center; color: var(--red); font-size: 26px; font-weight: 900; transform: rotate(-12deg);
+  }
+  .ledger { border-top: 1px dashed var(--line); padding-top: 12px; font-size: 14px; }
+  .ledger div { display: flex; justify-content: space-between; padding: 5px 0; }
+  .ledger .ok { color: var(--green); font-weight: 700; }
+  .ledger .hold { color: #b9821c; font-weight: 700; }
+  .ledger b { font-family: var(--font-mono); }
+  .milestone-box { border: 1px solid var(--line); border-radius: 14px; padding: 14px; margin-top: 12px; }
+  .milestone-box .row { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px; }
+  .tier { display: inline-block; background: var(--red); color: #fff; font-size: 12px; font-weight: 800; padding: 3px 10px; border-radius: 99px; }
+
+  /* ---------- features ---------- */
+  .features { padding: clamp(60px, 8vw, 110px) 0; }
+  .features-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-top: 48px; }
+  .feature {
+    border: 1px solid var(--line); border-radius: 20px 20px 20px 6px; background: #fff;
+    padding: 24px; transition: transform .18s var(--ease-out), border-color .18s var(--ease-out), box-shadow .18s var(--ease-out);
+  }
+  .feature:hover { transform: translateY(-4px); border-color: var(--red); box-shadow: 0 18px 38px rgba(27,20,18,.08); }
+  .feature .ico { width: 44px; height: 44px; border-radius: 12px 12px 12px 4px; background: var(--red-soft); color: var(--red); display: grid; place-items: center; font-size: 20px; margin-bottom: 16px; }
+  .feature h3 { font-size: 19px; letter-spacing: -0.5px; }
+  .feature p { font-size: 14.5px; color: var(--muted); margin-top: 8px; line-height: 1.7; }
+  .feature .mono { font-family: var(--font-mono); font-size: 12px; color: var(--red-deep); display: block; margin-top: 12px; letter-spacing: .04em; }
+
+  /* ---------- merchant report ---------- */
+  .report { background: var(--cream); padding: clamp(60px, 8vw, 110px) 0; }
+  .report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 4vw, 56px); margin-top: 48px; align-items: center; }
+  .report-copy h3 { font-size: 26px; letter-spacing: -1px; }
+  .report-copy p { color: var(--muted); margin-top: 12px; }
+  .report-copy ul { list-style: none; margin-top: 18px; display: grid; gap: 10px; }
+  .report-copy li { display: flex; gap: 10px; font-size: 15px; }
+  .report-copy li::before { content: "→"; color: var(--red); font-weight: 900; }
+  .report-card {
+    background: #fff; border: 1px solid var(--line); border-radius: 22px 22px 22px 6px;
+    padding: 24px; box-shadow: 13px 15px 0 var(--red); transform: rotate(-1.5deg);
+  }
+  .report-card .r-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+  .report-card .r-head b { font-size: 17px; letter-spacing: -0.5px; }
+  .kpis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 18px; }
+  .kpi { background: var(--cream); border-radius: 12px; padding: 12px; }
+  .kpi small { font-size: 11.5px; color: var(--muted); }
+  .kpi b { display: block; font-size: 22px; font-family: var(--font-mono); letter-spacing: -0.5px; }
+  .rtable { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .rtable th { font-size: 12px; color: var(--muted); font-weight: 500; text-align: left; padding: 8px 4px; border-bottom: 1px solid var(--line); }
+  .rtable td { padding: 9px 4px; border-bottom: 1px solid var(--line); }
+  .rtable td.r, .rtable th.r { text-align: right; font-family: var(--font-mono); }
+  .rtable .link-user { color: var(--red-deep); font-weight: 700; }
+  .pill { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 99px; }
+  .pill.ok { background: #e3f3ea; color: #1f6b3b; }
+  .pill.hold { background: #fbf0d8; color: #b9821c; }
+
+  /* ---------- milestone band ---------- */
+  .milestones { background: var(--dark); color: #fff; padding: clamp(60px, 8vw, 100px) 0; position: relative; overflow: hidden; }
+  .milestones::before { content: ""; position: absolute; inset: 0; background: radial-gradient(500px 400px at 90% 10%, rgba(226,48,47,.2), transparent 60%); }
+  .milestones .section-head { position: relative; }
+  .milestones .section-head h2 em { color: #ff8a87; }
+  .m-table { margin-top: 46px; position: relative; border: 1px solid #4a2a24; border-radius: 20px; overflow: hidden; }
+  .m-row { display: grid; grid-template-columns: 1.2fr 2fr 2fr; align-items: center; }
+  .m-row > div { padding: 18px 22px; font-size: 15px; }
+  .m-row.head { background: var(--red); font-weight: 800; font-size: 13px; letter-spacing: .06em; }
+  .m-row:not(.head) { border-top: 1px solid #4a2a24; }
+  .m-row .m-qty { font-family: var(--font-mono); font-size: 26px; font-weight: 700; color: #ff8a87; }
+  .m-row .m-cond { color: #cbb4ae; font-size: 13.5px; }
+  .progress-wrap { margin-top: 34px; }
+  .progress-wrap .lbl { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 13px; color: #cbb4ae; margin-bottom: 10px; }
+  .progress { height: 14px; background: #3d211c; border-radius: 99px; overflow: hidden; }
+  .progress i { display: block; height: 100%; background: linear-gradient(90deg, var(--red), #ff6a67); border-radius: 99px; }
+
+  /* ---------- CTA band ---------- */
+  .cta-band { padding: clamp(60px, 8vw, 110px) 0; text-align: center; }
+  .cta-band .big {
+    background: var(--red); color: #fff; border-radius: 28px 28px 28px 8px;
+    padding: clamp(40px, 6vw, 72px); box-shadow: 13px 15px 0 var(--ink);
+    position: relative; overflow: hidden;
+  }
+  .cta-band .big::before { content: ""; position: absolute; width: 320px; height: 320px; border-radius: 50%; border: 1px solid rgba(255,255,255,.22); top: -120px; right: -80px; }
+  .cta-band h2 { font-size: clamp(30px, 4.5vw, 48px); color: #fff; letter-spacing: -2px; }
+  .cta-band p { color: #ffd7d6; margin-top: 14px; font-size: 17px; }
+  .cta-band .btn { margin-top: 28px; background: #fff; color: var(--red); box-shadow: 6px 7px 0 var(--ink); }
+  .cta-band .mono { font-family: var(--font-mono); font-size: 12px; color: #ffd7d6; margin-top: 18px; letter-spacing: .08em; }
+
+  /* ---------- footer ---------- */
+  footer { border-top: 1px solid var(--line); padding: 40px 0; }
+  .footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
+  .footer-inner .mono { font-family: var(--font-mono); font-size: 12px; color: var(--muted); letter-spacing: .06em; }
+
+  /* ---------- responsive ---------- */
+  @media (max-width: 980px) {
+    .hero-grid { grid-template-columns: 1fr; }
+    .system-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .demo-grid { grid-template-columns: 1fr; }
+    .demo-steps { position: static; }
+    .features-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .report-grid { grid-template-columns: 1fr; }
+    .m-row { grid-template-columns: 1fr; }
+    .m-row.head { display: none; }
+  }
+  @media (max-width: 620px) {
+    .nav-links { display: none; }
+    .system-grid { grid-template-columns: 1fr; }
+    .features-grid { grid-template-columns: 1fr; }
+    .strip-inner { gap: 12px; }
+    .strip-arrow { display: none; }
+    .flow-chip { display: none; }
+    .demo-screen { height: 560px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<nav>
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top">
+      <span class="mark">推</span>
+      <span>推廣易<small>TUI · GROWTH ENGINE</small></span>
+    </a>
+    <div class="nav-links">
+      <a href="#flow">運作流程</a>
+      <a href="#demo">用戶示範</a>
+      <a href="#features">Phase 1 功能</a>
+      <a href="#merchant">商戶報表</a>
+    </div>
+    <a class="nav-cta" href="#demo">睇示範</a>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div>
+      <p class="eyebrow">✦ 推廣易 PHASE 1</p>
+      <h1>著數易嘅<br><span class="fill">帶客引擎</span></h1>
+      <p class="sub">商戶出 link，人人可分享，帶到客<em>自動分佣</em>。推廣易把「廣告費」變成「可追蹤、有成效先俾」嘅佣金分成——<b>唔使自己燒錢補貼。</b></p>
+      <div class="hero-ctas">
+        <a class="btn primary" href="#demo">即刻睇示範 ↓</a>
+        <a class="btn ghost" href="#flow">睇運作流程</a>
+      </div>
+      <div class="hero-meta">
+        <div><b>3 步</b>分享 → 領券 → 分佣</div>
+        <div><b>0 元</b>商戶免費入門</div>
+        <div><b>自動</b>tracking + 核銷 + rebate</div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="phone">
+        <div class="phone-screen">
+          <div class="phone-top"><b>推廣易 · 我嘅錢包</b><span class="dot"></span></div>
+          <div class="mini-balance">
+            <small>可回贈積分</small>
+            <b>2,480</b><span> 分 · 會員級別 <span class="tag" style="background:#ff8a87;color:#7f1d1d">銀章</span></span>
+          </div>
+          <div class="mini-card">
+            <div class="row"><span>里程碑進度 · 帶客</span><b><em>2</em> / 3 個客</b></div>
+            <div class="mini-bar"><i style="width: 66%"></i></div>
+          </div>
+          <div class="mini-card">
+            <div class="row"><span>每週大抽獎</span><span class="tag">🎟 1 張券</span></div>
+          </div>
+          <div class="mini-ticket" style="margin-top:16px">
+            <div class="shop">著數易 coupon · 阿財冰室</div>
+            <b>堂食 9 折</b>
+            <div class="cond">經你條 link 領券 · 到店核銷後你賺 120 分</div>
+          </div>
+        </div>
+      </div>
+      <div class="flow-chip">
+        <b>你分享 → 朋友用 → 你賺</b><br>
+        <span class="arrow">↗</span> 每帶 1 個客自動入積分
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ FLOW STRIP ============ -->
+<section class="strip">
+  <div class="wrap strip-inner">
+    <div class="strip-step"><span class="n">1</span><span><b>你分享</b><small>專屬 share link</small></span></div>
+    <span class="strip-arrow">→</span>
+    <div class="strip-step"><span class="n">2</span><span><b>朋友領券</b><small>經你條 link</small></span></div>
+    <span class="strip-arrow">→</span>
+    <div class="strip-step"><span class="n">3</span><span><b>到店核銷</b><small>著數易負責</small></span></div>
+    <span class="strip-arrow">→</span>
+    <div class="strip-step"><span class="n">4</span><span><b>自動分佣</b><small>rebate 入你袋</small></span></div>
+  </div>
+</section>
+
+<!-- ============ SYSTEM DIAGRAM ============ -->
+<section class="system" id="flow">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">✦ PHASE 1 系統圖</p>
+      <h2>四個角色，<em>一條可追蹤</em>嘅分享鏈</h2>
+      <p>推廣易負責「分享 + 回贈 + 任務」，著數易負責「優惠 + 核銷 + 佣金」。Phase 1 最關鍵：<b>著數易 coupon 掛 tracking → 變成推廣易 share link</b>，唔好重造核銷同積分邏輯。</p>
+    </div>
+
+    <div class="system-grid">
+      <!-- 個體用戶 -->
+      <div class="lane user">
+        <div class="lane-head"><span class="dot"></span>01 / 個體用戶</div>
+        <div class="lane-body">
+          <div class="node"><b>加入</b><small>付月費成為會員</small></div>
+          <div class="connector"><span class="flow">↓</span> 開通</div>
+          <div class="node"><b>分享</b><small>分享 link · 朋友經 link 用券</small></div>
+          <div class="connector"><span class="flow">↓</span> 帶客</div>
+          <div class="node"><b>回贈同獎勵</b><small>獎勵儀表板 · 睇 rebate + 里程碑進度</small></div>
+        </div>
+      </div>
+
+      <!-- 推廣易 -->
+      <div class="lane promo">
+        <div class="lane-head"><span class="dot"></span>02 / 推廣易 <span style="font-family:var(--font-mono);font-weight:400;font-size:10px;opacity:.8">RED</span></div>
+        <div class="lane-body">
+          <div class="node"><b>開會員</b><small>解鎖獨家著數 + 專屬 link</small></div>
+          <div class="connector"><span class="flow">↓</span> 交入嚟</div>
+          <div class="node"><b>會員著數</b><small>著數易交入嚟嘅優惠</small></div>
+          <div class="connector"><span class="flow">↓</span> 產生</div>
+          <div class="node"><b>專屬 share link</b><small>帶個人 tracking ID</small></div>
+          <div class="connector"><span class="flow">↓</span> 觸發</div>
+          <div class="node"><b>Cash Rebate</b><small>積分回贈（Phase 1）· 防假檢查</small></div>
+          <div class="node"><b>里程碑階梯</b><small>帶夠客 → 額外 bonus</small></div>
+        </div>
+      </div>
+
+      <!-- 著數易 -->
+      <div class="lane jetso">
+        <div class="lane-head"><span class="dot"></span>03 / 著數易 <span style="font-family:var(--font-mono);font-weight:400;font-size:10px;opacity:.7">YELLOW</span></div>
+        <div class="lane-body">
+          <div class="node"><b>著數內容</b><small>現有或未來優惠</small></div>
+          <div class="connector"><span class="flow">↓</span> 領券後</div>
+          <div class="node"><b>到店核銷</b><small>領券 → 到店用券</small></div>
+          <div class="connector"><span class="flow">↓</span> 回傳</div>
+          <div class="node"><b>每週大抽獎</b><small>抽獎券入返嚟</small></div>
+        </div>
+      </div>
+
+      <!-- 輕量商戶 -->
+      <div class="lane merchant">
+        <div class="lane-head"><span class="dot"></span>04 / 輕量商戶</div>
+        <div class="lane-body">
+          <div class="node"><b>出 Share Link</b><small>一條 link 人人用得</small></div>
+          <div class="connector"><span class="flow">↓</span> 掛住</div>
+          <div class="node"><b>著數易 coupon</b><small>可揀現有優惠掛上去</small></div>
+          <div class="connector"><span class="flow">↓</span> 睇</div>
+          <div class="node"><b>referral 報表</b><small>睇邊個帶咗幾多客</small></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="system-note">
+      <span><i class="sys-ink"></i> 用戶 / 商戶接觸位</span>
+      <span><i class="sys-red"></i> 推廣易功能</span>
+      <span><i class="sys-yellow"></i> 著數易內容</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ INTERACTIVE DEMO ============ -->
+<section class="demo" id="demo">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow on-dark">✦ 用戶示範 · 6 步走完 Phase 1</p>
+      <h2>一個用戶嘅<em>賺錢旅程</em></h2>
+      <p style="color:#cbb4ae">由加入會員、拎專屬 link、分享、朋友核銷，到賺積分同睇獎勵儀表板。撳一下每一步，睇住成個流程點行。</p>
+    </div>
+
+    <div class="demo-grid">
+      <ol class="demo-steps" id="steps"></ol>
+
+      <div class="demo-phone">
+        <div class="demo-screen">
+          <div class="ds-top"><small id="who"></small><h3 id="what"></h3></div>
+
+          <!-- 0 加入會員 -->
+          <div class="ds-body" data-step="0">
+            <div class="plan">
+              <div class="row" style="display:flex;justify-content:space-between;align-items:center">
+                <b style="font-size:18px;letter-spacing:-.5px">推廣易會員</b>
+                <span class="tag" style="background:var(--red);color:#fff">Phase 1</span>
+              </div>
+              <div class="price">$38<span style="font-size:14px;font-weight:500;color:var(--muted)"> / 月</span></div>
+              <ul>
+                <li>獨家著數（著數易交入嚟）</li>
+                <li>更高回贈比例</li>
+                <li>一條專屬 share link</li>
+                <li>賺積分 + 抽獎券</li>
+              </ul>
+            </div>
+            <p class="p-note">Phase 1 回贈先以<strong>積分</strong>行（喺著數易消費用），現金出金留返 Phase 2，避開 KYC / 支付 / 合規。</p>
+            <button class="p-cta" onclick="demoNext()">開通會員 $38/月</button>
+          </div>
+
+          <!-- 1 專屬 link -->
+          <div class="ds-body" data-step="1" hidden>
+            <p class="p-note" style="margin-top:0">你而家有一條帶個人 tracking ID 嘅 link，朋友經佢領券 / 用券，rebate 自動計返你頭上。</p>
+            <div class="linkbox" style="margin-top:16px">
+              <small>你嘅專屬 share link</small>
+              <div class="code">tgy.hk/r/@hkfoodie</div>
+              <small style="display:block;margin-top:4px">tracking ID · <b style="color:var(--red-deep)">U-48217</b></small>
+            </div>
+            <div class="stat-row">
+              <div class="stat"><b>0</b><small>帶客</small></div>
+              <div class="stat"><b>0</b><small>核銷</small></div>
+              <div class="stat"><b>0</b><small>積分</small></div>
+            </div>
+            <button class="p-cta" onclick="demoNext()">複製 link，去分享</button>
+          </div>
+
+          <!-- 2 分享 + mission -->
+          <div class="ds-body" data-step="2" hidden>
+            <p class="p-note" style="margin-top:0">分享就係任務。完成 Mission 有回贈，進度即刻 show 出嚟。</p>
+            <div class="mission" style="margin-top:14px">
+              <div class="mission-item">
+                <div class="row"><span>分享著數 5 次</span><b>2 / 5</b></div>
+                <div class="mini-bar" style="margin-top:8px"><i style="width:40%;background:var(--red)"></i></div>
+              </div>
+              <div class="mission-item">
+                <div class="row"><span>邀請 3 個朋友入會</span><b>1 / 3</b></div>
+                <div class="mini-bar" style="margin-top:8px"><i style="width:33%;background:var(--red)"></i></div>
+              </div>
+            </div>
+            <div class="share-row">
+              <button class="share-btn wa">WhatsApp 分享</button>
+              <button class="share-btn ig">IG Story</button>
+            </div>
+            <div class="mini-card" style="margin:14px 0 0">
+              <small style="color:var(--muted)">建議 post 文字（一撳複製）</small>
+              <p style="font-size:13.5px;margin-top:4px">阿財冰室西多士真係邪惡 🤤 經我條 link 堂食 9 折，你用我賺！<b style="color:var(--red)">tgy.hk/r/@hkfoodie</b></p>
+            </div>
+            <button class="p-cta" onclick="demoNext()">分享咗，朋友去領券</button>
+          </div>
+
+          <!-- 3 朋友領券 -->
+          <div class="ds-body" data-step="3" hidden>
+            <p class="via">朋友打開你條 link，見到著數易嘅 coupon</p>
+            <div class="ticket">
+              <div class="main">
+                <div class="shop">阿財冰室 · 深水埗 <span class="tag">經 @hkfoodie 推薦</span></div>
+                <div class="title">堂食 9 折</div>
+                <div class="cond">每單滿 $80 · 平日 2–6pm</div>
+              </div>
+              <div class="stub">領券<b>9 折</b></div>
+            </div>
+            <p class="p-note">呢度直接連住著數易現有 coupon 庫存——核銷、佣金、積分全部復用，唔使重造。</p>
+            <button class="p-cta dark" onclick="demoNext()">朋友領券 → 到店核銷</button>
+          </div>
+
+          <!-- 4 核銷 + rebate -->
+          <div class="ds-body" data-step="4" hidden>
+            <p class="via">朋友到店，店員掃碼核銷（著數易負責）</p>
+            <div class="qrwrap"><canvas class="qr" id="qr" width="25" height="25" aria-label="QR code"></canvas></div>
+            <div class="stamp">已核銷</div>
+            <div class="ledger">
+              <div><span>朋友到店核銷</span><b class="ok">✓ 成功</b></div>
+              <div><span>記錄 referrer</span><b>@hkfoodie</b></div>
+              <div><span>你嘅 rebate</span><b class="ok">+120 分</b></div>
+              <div><span>狀態</span><b class="hold">凍結 · 等退貨窗關閉</b></div>
+            </div>
+            <p class="p-note">防假檢查：自己帶自己唔計、突然爆量會 hold 落嚟 review、退款會 reverse。</p>
+            <button class="p-cta" onclick="demoNext()">去睇獎勵儀表板</button>
+          </div>
+
+          <!-- 5 獎勵儀表板 -->
+          <div class="ds-body" data-step="5" hidden>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+              <b style="font-size:17px;letter-spacing:-.5px">我嘅獎勵</b>
+              <span class="tier">銀章會員</span>
+            </div>
+            <div class="kpis" style="grid-template-columns:repeat(2,1fr)">
+              <div class="kpi"><small>可回贈積分</small><b>2,480</b></div>
+              <div class="kpi"><small>抽獎券</small><b>1 張</b></div>
+            </div>
+            <div class="milestone-box">
+              <div class="row"><span>里程碑 · 帶 3 個客 → +$10 bonus</span><b>2 / 3</b></div>
+              <div class="mini-bar"><i style="width:66%;background:var(--red)"></i></div>
+              <small style="color:var(--muted);display:block;margin-top:8px">你仲差 <b style="color:var(--red-deep)">1 個客</b> 就到下一個里程碑</small>
+            </div>
+            <div class="ledger" style="margin-top:14px">
+              <div><span>+120 分 · 阿財冰室</span><b class="hold">凍結</b></div>
+              <div><span>+80 分 · 旺記燒味</span><b class="ok">已入賬</b></div>
+              <div><span>+100 分 · 邀請朋友</span><b class="ok">已入賬</b></div>
+              <div><span>-60 分 · 退款 reverse</span><b style="color:var(--red)">被拒</b></div>
+            </div>
+            <p class="p-note">每筆 rebate 都寫明狀態 + 原因：已入賬 / 凍結（等條件達成）/ 被拒（寫明點解）。</p>
+            <button class="p-cta ghost" onclick="demoReset()">↺ 重新睇示範</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURES ============ -->
+<section class="features" id="features">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">✦ PHASE 1 功能一覽</p>
+      <h2>八塊功能，<em>一次過</em>講清楚</h2>
+    </div>
+    <div class="features-grid">
+      <div class="feature">
+        <div class="ico">👥</div>
+        <h3>會員制</h3>
+        <p>付月費成為會員，解鎖更多 / 獨家著數 + 更高回贈比例。會員費係第一條收入。</p>
+        <span class="mono">MEMBERSHIP</span>
+      </div>
+      <div class="feature">
+        <div class="ico">🔗</div>
+        <h3>專屬 Share Link</h3>
+        <p>每人一條帶 tracking ID 嘅 link。朋友經 link 領券 / 用券，rebate 自動計返分享者。</p>
+        <span class="mono">TRACKING LINK</span>
+      </div>
+      <div class="feature">
+        <div class="ico">📊</div>
+        <h3>獎勵儀表板</h3>
+        <p>每筆 rebate 寫明狀態 + 原因（已入賬 / 凍結 / 被拒），每條 link 帶咗幾多客一眼睇晒。</p>
+        <span class="mono">REWARD DASHBOARD</span>
+      </div>
+      <div class="feature">
+        <div class="ico">🏔</div>
+        <h3>里程碑階梯</h3>
+        <p>帶夠客 → 額外 bonus（唔係取代單單 rebate）。永遠 show 進度：「你仲差 X 個客」。</p>
+        <span class="mono">MILESTONES</span>
+      </div>
+      <div class="feature">
+        <div class="ico">🎟</div>
+        <h3>抽獎券入著數易</h3>
+        <p>每 N 個客送 1 張抽獎券，自動入返著數易每週大抽獎——唔使自己起多個抽獎系統。</p>
+        <span class="mono">RAFFLE TICKET</span>
+      </div>
+      <div class="feature">
+        <div class="ico">🎯</div>
+        <h3>Mission 任務</h3>
+        <p>多步任務 + 進度（分享 5 次 2/5、邀請 3 個朋友 1/3），完成先獎。</p>
+        <span class="mono">CHALLENGES</span>
+      </div>
+      <div class="feature">
+        <div class="ico">📱</div>
+        <h3>到店 QR / Wallet Pass</h3>
+        <p>個人 referral QR 放喺錢包 pass，面對面推薦即刻變可追蹤 referral。</p>
+        <span class="mono">QR + WALLET</span>
+      </div>
+      <div class="feature">
+        <div class="ico">🛡</div>
+        <h3>防假（Fraud）</h3>
+        <p>自己帶自己唔計、突然爆量 hold 落嚟 review、退款 reverse。積分行先，出金留 Phase 2。</p>
+        <span class="mono">FRAUD CONTROL</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MERCHANT REPORT ============ -->
+<section class="report" id="merchant">
+  <div class="wrap report-grid">
+    <div class="report-copy">
+      <p class="eyebrow">✦ 輕量商戶</p>
+      <h3>出一條「人人用得」嘅 link，睇邊個帶咗幾多客</h3>
+      <p>商戶唔使自己搵 KOL。出一條 share link（對方唔使係會員），可揀掛住著數易現有 coupon，referral 報表睇到邊個用戶帶咗幾多客。</p>
+      <ul>
+        <li>Phase 1 免費入門，先聚量（佣金嗰度已有收入）</li>
+        <li>冇客核銷就唔使俾，成效先俾錢</li>
+        <li>回贈資金 = 商戶佣金再分配，平台唔使燒錢補貼</li>
+      </ul>
+    </div>
+    <div class="report-card">
+      <div class="r-head"><b>阿財冰室 · referral 報表</b><span class="tag">今個月</span></div>
+      <div class="kpis">
+        <div class="kpi"><small>總帶客</small><b>128</b></div>
+        <div class="kpi"><small>已核銷</small><b>96</b></div>
+        <div class="kpi"><small>佣金支出</small><b>$1,440</b></div>
+      </div>
+      <table class="rtable">
+        <thead><tr><th>用戶</th><th class="r">帶客</th><th class="r">核銷</th><th class="r">狀態</th></tr></thead>
+        <tbody>
+          <tr><td class="link-user">@hkfoodie</td><td class="r">41</td><td class="r">33</td><td class="r"><span class="pill ok">活躍</span></td></tr>
+          <tr><td class="link-user">@深水埗搵食</td><td class="r">33</td><td class="r">27</td><td class="r"><span class="pill ok">活躍</span></td></tr>
+          <tr><td class="link-user">@週末去邊食</td><td class="r">19</td><td class="r">12</td><td class="r"><span class="pill hold">凍結</span></td></tr>
+          <tr><td class="link-user">@mia_hk</td><td class="r">27</td><td class="r">18</td><td class="r"><span class="pill ok">活躍</span></td></tr>
+        </tbody>
+      </table>
+      <p class="p-note">示範數字。每帶一位客核銷，商戶俾 $15 佣金：分享者分 ⅔，平台收 ⅓。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MILESTONE BAND ============ -->
+<section class="milestones">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow on-dark">✦ 里程碑階梯</p>
+      <h2>帶夠客，<em>額外 bonus</em> 加喺每單之上</h2>
+    </div>
+    <div class="m-table">
+      <div class="m-row head">
+        <div>累計帶客</div><div>獎勵</div><div>條件</div>
+      </div>
+      <div class="m-row"><div class="m-qty">每 1 個</div><div>固定 rebate（$10 / 積分）</div><div class="m-cond">到店核銷 + 過退貨窗</div></div>
+      <div class="m-row"><div class="m-qty">帶 3 個</div><div>額外 bonus</div><div class="m-cond">達成里程碑自動發</div></div>
+      <div class="m-row"><div class="m-qty">帶 10 個</div><div>更大 bonus + 解鎖高級會員</div><div class="m-cond">同上</div></div>
+      <div class="m-row"><div class="m-qty">帶 25 個</div><div>入大抽獎 / 實體獎品</div><div class="m-cond">同上</div></div>
+    </div>
+    <div class="progress-wrap">
+      <div class="lbl"><span>你而家：2 個客</span><span>下個里程碑：3 個客 → +$10 bonus</span></div>
+      <div class="progress"><i style="width:66%"></i></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="cta-band">
+  <div class="wrap">
+    <div class="big">
+      <p class="eyebrow on-dark" style="justify-content:center">✦ 下一步</p>
+      <h2>拍板 5 個關鍵決定，<br>就可以起 Phase 1</h2>
+      <p>回贈出金 · 賬號打通 · 商戶收費 · share link 形態 · 回贈比例</p>
+      <a class="btn" href="mailto:hello@tgy.hk">約傾下一步 →</a>
+      <div class="mono">推廣易 = 著數易嘅帶客引擎 · PHASE 1 DEMO</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap footer-inner">
+    <div>
+      <b style="letter-spacing:-1px">推廣易</b>
+      <span class="mono" style="margin-left:8px">TUI · GROWTH ENGINE</span>
+    </div>
+    <div class="mono">FE 示範 · 無後端 · 紅色主題（著數易 = 黃 / 推廣易 = 紅）</div>
+  </div>
+</footer>
+
+<script>
+  const STEPS = [
+    { title: "加入會員", who: "個體用戶", what: "付月費成為會員",
+      say: "付月費解鎖獨家著數 + 更高回贈比例。Phase 1 回贈先以積分行。" },
+    { title: "拎專屬 link", who: "個體用戶", what: "你嘅專屬 Share Link",
+      say: "一條帶個人 tracking ID 嘅 link，朋友經佢用券，rebate 自動計返你。" },
+    { title: "分享 + 任務", who: "個體用戶", what: "分享俾朋友",
+      say: "分享就係 Mission。完成任務儲 rebate 或積分，進度即刻 show。" },
+    { title: "朋友領券", who: "朋友（唔使會員）", what: "著數易 coupon",
+      say: "著數易 coupon 掛 tracking 變成推廣易 link，直接復用現有 coupon 庫存。" },
+    { title: "到店核銷", who: "著數易", what: "領券 → 核銷 → rebate",
+      say: "店員掃碼核銷，記錄 referrer，觸發 rebate。防假檢查同步進行。" },
+    { title: "獎勵儀表板", who: "個體用戶", what: "我嘅獎勵",
+      say: "睇每筆 rebate 狀態、里程碑進度、抽獎券，升級即刻推通知。" },
+  ];
+
+  let step = 0;
+  const $ = (id) => document.getElementById(id);
+
+  function renderRail() {
+    $("steps").innerHTML = STEPS.map((s, i) => `
+      <li><button type="button" class="demo-step ${i < step ? "done" : ""}"
+        ${i === step ? 'aria-current="step"' : ""} onclick="demoGo(${i})">
+        <span class="n">${i < step ? "✓" : i + 1}</span>
+        <span><h3>${s.title}</h3><p>${s.say}</p></span>
+      </button></li>`).join("");
+  }
+
+  function demoGo(i) {
+    step = Math.max(0, Math.min(STEPS.length - 1, i));
+    document.querySelectorAll(".ds-body").forEach((el) => {
+      el.hidden = Number(el.dataset.step) !== step;
+    });
+    $("who").textContent = STEPS[step].who;
+    $("what").textContent = STEPS[step].what;
+    if (step === 4) drawQR();
+    renderRail();
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!reduce) {
+      document.querySelector(".demo-phone").scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }
+  window.demoGo = demoGo;
+  window.demoNext = () => demoGo(step + 1);
+  window.demoReset = () => demoGo(0);
+
+  function drawQR() {
+    const cv = $("qr"), ctx = cv.getContext("2d"), N = 25;
+    const seed = "TUI-48217";
+    let h = 0;
+    for (const ch of seed) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+    const rnd = () => ((h = (h * 1103515245 + 12345) >>> 0) / 4294967296);
+    ctx.fillStyle = "#fdfaf8"; ctx.fillRect(0, 0, N, N);
+    ctx.fillStyle = "#1b1412";
+    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) if (rnd() > .52) ctx.fillRect(x, y, 1, 1);
+    const finder = (x, y) => {
+      ctx.fillStyle = "#fdfaf8"; ctx.fillRect(x - 1, y - 1, 9, 9);
+      ctx.fillStyle = "#1b1412"; ctx.fillRect(x, y, 7, 7);
+      ctx.fillStyle = "#fdfaf8"; ctx.fillRect(x + 1, y + 1, 5, 5);
+      ctx.fillStyle = "#1b1412"; ctx.fillRect(x + 2, y + 2, 3, 3);
+    };
+    finder(0, 0); finder(N - 7, 0); finder(0, N - 7);
+  }
+
+  demoGo(0);
+</script>
+</body>
+</html>
