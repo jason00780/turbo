@@ -1,0 +1,601 @@
+<!doctype html>
+<html lang="zh-HK">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>帶客 · KOL × Coupon 示範</title>
+<style>
+  :root {
+    --ink: #1e1b2e;
+    --ink-soft: #5d5870;
+    --line: #e4e1ec;
+    --page: #f3f2f7;
+    --jade: #0e7c66;
+    --jade-soft: #e3f3ef;
+    --red: #e23d3d;
+    --ticket: #ffc23d;
+    --ticket-soft: #fff4d6;
+    --white: #ffffff;
+    --font: "PingFang HK", "PingFang TC", "Heiti TC", "Microsoft JhengHei",
+      system-ui, sans-serif;
+    --num: ui-rounded, "SF Pro Rounded", "PingFang HK", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    font-family: var(--font);
+    color: var(--ink);
+    background: var(--page);
+    display: grid;
+    grid-template-columns: minmax(300px, 440px) 1fr;
+    overflow: hidden;
+  }
+  button { font: inherit; color: inherit; cursor: pointer; border: 0; background: none; }
+  button:focus-visible, input:focus-visible {
+    outline: 3px solid var(--ticket);
+    outline-offset: 2px;
+  }
+
+  /* Left rail: the story the presenter walks through */
+  .rail {
+    background: var(--ink);
+    color: #fff;
+    padding: 48px 40px 32px;
+    display: flex;
+    flex-direction: column;
+  }
+  .brand { display: flex; align-items: baseline; gap: 12px; }
+  .brand b { font-size: 44px; font-weight: 800; letter-spacing: 2px; }
+  .brand span { color: #b9b4c9; font-size: 15px; }
+  .pitch { margin-top: 14px; color: #d7d3e3; font-size: 16px; line-height: 1.6; }
+  .steps { list-style: none; margin-top: 40px; display: grid; gap: 6px; }
+  .step {
+    width: 100%;
+    text-align: left;
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    gap: 14px;
+    padding: 14px 14px;
+    border-radius: 14px;
+    color: #9f99b3;
+    transition: background .2s, color .2s;
+  }
+  .step .n {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 2px solid currentColor;
+    display: grid; place-items: center;
+    font-family: var(--num); font-weight: 700;
+  }
+  .step h3 { font-size: 18px; font-weight: 700; }
+  .step p { font-size: 14px; line-height: 1.55; margin-top: 4px; display: none; }
+  .step[aria-current="step"] { background: #2d2942; color: #fff; }
+  .step[aria-current="step"] .n { background: var(--ticket); border-color: var(--ticket); color: var(--ink); }
+  .step[aria-current="step"] p { display: block; color: #d7d3e3; }
+  .step.done .n { background: var(--jade); border-color: var(--jade); color: #fff; }
+  .rail-foot {
+    margin-top: auto;
+    display: flex; justify-content: space-between; align-items: center;
+    color: #8c85a3; font-size: 13px;
+  }
+  .rail-foot button { color: #d7d3e3; text-decoration: underline; text-underline-offset: 3px; }
+
+  /* Stage + phone */
+  .stage { display: grid; place-items: center; padding: 24px; position: relative; }
+  .phone {
+    width: 380px;
+    height: min(780px, calc(100vh - 48px));
+    background: var(--white);
+    border-radius: 48px;
+    border: 12px solid var(--ink);
+    box-shadow: 0 30px 60px -20px rgba(30, 27, 46, .45);
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    position: relative;
+  }
+  .notch {
+    position: absolute; top: 8px; left: 50%; transform: translateX(-50%);
+    width: 110px; height: 28px; background: var(--ink); border-radius: 20px; z-index: 3;
+  }
+  .appbar {
+    padding: 52px 22px 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  .appbar small { color: var(--ink-soft); font-size: 13px; }
+  .appbar h2 { font-size: 21px; margin-top: 2px; }
+  .screen { flex: 1; overflow-y: auto; padding: 18px 22px 22px; }
+  .screen[hidden] { display: none; }
+  .cta {
+    width: 100%;
+    padding: 15px;
+    border-radius: 14px;
+    background: var(--jade);
+    color: #fff;
+    font-size: 17px;
+    font-weight: 700;
+    margin-top: 16px;
+  }
+  .cta.ghost { background: var(--jade-soft); color: var(--jade); }
+  .cta:active { transform: translateY(1px); }
+
+  /* Form */
+  label.f { display: block; margin-bottom: 14px; }
+  label.f span { display: block; font-size: 13px; color: var(--ink-soft); margin-bottom: 6px; }
+  label.f input {
+    width: 100%; font: inherit; font-size: 16px;
+    padding: 11px 12px; border: 1.5px solid var(--line); border-radius: 10px;
+  }
+  .seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .seg button {
+    padding: 10px 0; border-radius: 10px; border: 1.5px solid var(--line);
+    font-family: var(--num); font-weight: 700; font-size: 16px;
+  }
+  .seg button[aria-pressed="true"] { border-color: var(--jade); background: var(--jade-soft); color: var(--jade); }
+  .hint { font-size: 12.5px; color: var(--ink-soft); margin-top: 6px; line-height: 1.5; }
+
+  /* The coupon "飛" — the one memorable object */
+  .ticket {
+    display: grid;
+    grid-template-columns: 1fr 92px;
+    background: var(--ticket-soft);
+    border-radius: 14px;
+    position: relative;
+    margin: 6px 0 4px;
+  }
+  .ticket::before, .ticket::after {
+    content: ""; position: absolute; left: calc(100% - 92px - 9px);
+    width: 18px; height: 18px; border-radius: 50%; background: var(--white);
+  }
+  .ticket::before { top: -9px; }
+  .ticket::after { bottom: -9px; }
+  .ticket .main { padding: 16px 16px 14px; border-right: 2px dashed #e8c66b; }
+  .ticket .shop { font-size: 12.5px; color: var(--ink-soft); }
+  .ticket .title { font-size: 22px; font-weight: 800; margin-top: 2px; }
+  .ticket .cond { font-size: 13px; color: var(--ink-soft); margin-top: 4px; }
+  .ticket .stub {
+    display: grid; place-items: center; text-align: center;
+    font-size: 12px; color: var(--ink-soft); padding: 8px;
+  }
+  .ticket .stub b { display: block; font-family: var(--num); font-size: 24px; color: var(--ink); }
+  .ticket.new { outline: 2px solid var(--ticket); }
+  .badge {
+    display: inline-block; font-size: 11.5px; font-weight: 700;
+    padding: 2px 8px; border-radius: 99px; background: var(--red); color: #fff;
+    vertical-align: 2px; margin-left: 6px;
+  }
+
+  /* KOL */
+  .profile { display: flex; gap: 12px; align-items: center; margin-bottom: 16px; }
+  .avatar {
+    width: 52px; height: 52px; border-radius: 50%;
+    background: conic-gradient(var(--red), var(--ticket), var(--jade), var(--red));
+    display: grid; place-items: center;
+  }
+  .avatar i {
+    width: 44px; height: 44px; border-radius: 50%; background: var(--white);
+    display: grid; place-items: center; font-style: normal; font-size: 20px;
+  }
+  .profile b { font-size: 17px; }
+  .profile small { display: block; color: var(--ink-soft); font-size: 13px; }
+  .earn { font-size: 13px; color: var(--jade); font-weight: 700; margin-top: 6px; }
+  .codebox {
+    margin-top: 16px; padding: 16px; border-radius: 14px;
+    border: 2px solid var(--jade); background: var(--jade-soft); text-align: center;
+  }
+  .codebox .code { font-family: var(--num); font-size: 30px; font-weight: 800; letter-spacing: 3px; color: var(--jade); }
+  .codebox .link { font-size: 14px; color: var(--ink-soft); margin-top: 4px; }
+  .post {
+    margin-top: 14px; border: 1px solid var(--line); border-radius: 14px; padding: 14px;
+    font-size: 14px; line-height: 1.6;
+  }
+  .post small { color: var(--ink-soft); }
+
+  /* QR + scanner */
+  .qrwrap { display: grid; place-items: center; margin: 14px 0 6px; position: relative; }
+  .qr { width: 200px; height: 200px; image-rendering: pixelated; }
+  .scanline {
+    position: absolute; left: 50%; width: 230px; height: 3px; margin-left: -115px;
+    background: var(--red); box-shadow: 0 0 12px var(--red); top: 0; opacity: 0;
+  }
+  .scanning .scanline { animation: scan 1.1s ease-in-out; }
+  @keyframes scan {
+    0% { top: 0; opacity: 1; }
+    50% { top: 196px; opacity: 1; }
+    100% { top: 0; opacity: 0; }
+  }
+  .center { text-align: center; }
+  .via { font-size: 14px; color: var(--ink-soft); }
+  .result { text-align: center; padding-top: 18px; }
+  .stamp {
+    width: 150px; height: 150px; margin: 4px auto 14px;
+    border: 5px solid var(--red); border-radius: 50%;
+    display: grid; place-items: center; color: var(--red);
+    font-size: 30px; font-weight: 900; transform: rotate(-12deg);
+    animation: stamp .35s cubic-bezier(.2, 1.6, .4, 1);
+  }
+  @keyframes stamp {
+    from { transform: rotate(-12deg) scale(1.8); opacity: 0; }
+    to { transform: rotate(-12deg) scale(1); opacity: 1; }
+  }
+  .ledger {
+    margin-top: 14px; text-align: left; border-top: 1px dashed var(--line);
+    padding-top: 12px; font-size: 14.5px;
+  }
+  .ledger div { display: flex; justify-content: space-between; padding: 4px 0; }
+  .ledger b { font-family: var(--num); }
+
+  /* Dashboard */
+  .tabs { display: grid; grid-template-columns: 1fr 1fr; background: var(--page); border-radius: 12px; padding: 4px; margin-bottom: 16px; }
+  .tabs button { padding: 9px; border-radius: 9px; font-size: 14.5px; font-weight: 700; color: var(--ink-soft); }
+  .tabs button[aria-selected="true"] { background: var(--white); color: var(--ink); box-shadow: 0 1px 3px rgba(30, 27, 46, .15); }
+  .kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .kpi { padding: 12px; border-radius: 12px; background: var(--page); }
+  .kpi small { font-size: 12.5px; color: var(--ink-soft); }
+  .kpi b { display: block; font-family: var(--num); font-size: 26px; margin-top: 2px; }
+  .kpi.hero { grid-column: span 2; background: var(--ink); color: #fff; }
+  .kpi.hero small { color: #cfcade; }
+  .kpi.hero b { font-size: 34px; color: var(--ticket); }
+  h4 { font-size: 15px; margin: 18px 0 8px; }
+  .bar { margin-bottom: 10px; }
+  .bar .row { display: flex; justify-content: space-between; font-size: 14px; }
+  .bar .row b { font-family: var(--num); }
+  .bar .track { height: 8px; border-radius: 4px; background: var(--page); margin-top: 4px; overflow: hidden; }
+  .bar .fill { height: 100%; background: var(--jade); border-radius: 4px; transition: width .6s; }
+  .bar.lit .fill { background: var(--red); }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  td, th { padding: 8px 4px; border-bottom: 1px solid var(--line); text-align: left; }
+  th { font-size: 12.5px; color: var(--ink-soft); font-weight: 500; }
+  td.r, th.r { text-align: right; font-family: var(--num); }
+  tr.lit td { background: var(--ticket-soft); }
+  .note { font-size: 12.5px; color: var(--ink-soft); margin-top: 12px; line-height: 1.5; }
+
+  .toast {
+    position: absolute; left: 50%; bottom: 36px; transform: translate(-50%, 20px);
+    background: var(--ink); color: #fff; padding: 12px 20px; border-radius: 99px;
+    font-size: 15px; opacity: 0; transition: opacity .2s, transform .2s; pointer-events: none;
+    white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  @media (max-width: 860px) {
+    body { grid-template-columns: 1fr; overflow: auto; }
+    .rail { padding: 28px 22px; }
+    .phone { height: 720px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<aside class="rail">
+  <div class="brand"><b>帶客</b><span>KOL × Coupon 平台示範</span></div>
+  <p class="pitch">商戶只係喺 KOL 真係帶到客上門嗰陣先俾錢。</p>
+  <ol class="steps" id="steps"></ol>
+  <div class="rail-foot">
+    <span>← → 鍵轉畫面</span>
+    <button type="button" id="reset">重新開始示範</button>
+  </div>
+</aside>
+
+<main class="stage">
+  <div class="phone">
+    <div class="notch"></div>
+    <header class="appbar"><small id="who"></small><h2 id="what"></h2></header>
+
+    <!-- 1 商戶 -->
+    <section class="screen" data-step="0">
+      <label class="f"><span>優惠名稱</span><input id="f-title" value="堂食 9 折"></label>
+      <label class="f"><span>使用條件</span><input id="f-cond" value="每單滿 $80，平日 2–6pm"></label>
+      <div class="f" style="margin-bottom:14px">
+        <span class="hint" style="display:block;margin:0 0 6px">每帶一位客核銷，你俾幾多佣金？</span>
+        <div class="seg" id="fee">
+          <button type="button" data-v="10" aria-pressed="false">$10</button>
+          <button type="button" data-v="15" aria-pressed="true">$15</button>
+          <button type="button" data-v="20" aria-pressed="false">$20</button>
+        </div>
+        <p class="hint">冇人核銷就唔使俾。KOL 分三分二，平台收三分一。</p>
+      </div>
+      <p class="hint" style="margin-bottom:6px">客人會見到：</p>
+      <div class="ticket" id="preview"></div>
+      <button type="button" class="cta" id="publish">上架 coupon</button>
+    </section>
+
+    <!-- 2 KOL -->
+    <section class="screen" data-step="1" hidden>
+      <div class="profile">
+        <div class="avatar"><i>🍜</i></div>
+        <div><b>@食好啲先</b><small>Instagram 2.4 萬 · 小紅書 8,600</small></div>
+      </div>
+      <p class="hint" style="margin:0 0 8px">附近可以推介嘅優惠</p>
+      <div id="kol-list"></div>
+      <div id="kol-code" hidden>
+        <div class="codebox">
+          <div class="hint" style="margin:0 0 4px">你嘅專屬 code</div>
+          <div class="code" id="code-text"></div>
+          <div class="link" id="code-link"></div>
+        </div>
+        <div class="post">
+          <small>建議 post 文字，一撳就複製</small><br>
+          阿財冰室嘅西多士真係邪惡 🤤 平日下晝去，出示我條 link 堂食 9 折！
+          <span id="post-link" style="color:var(--jade)"></span>
+        </div>
+        <button type="button" class="cta" id="to-store">下一步：客人到店</button>
+      </div>
+    </section>
+
+    <!-- 3 到店核銷 -->
+    <section class="screen" data-step="2" hidden>
+      <div id="cust">
+        <p class="via center">客人喺店內打開 link，出示 QR</p>
+        <div class="qrwrap" id="qrwrap">
+          <canvas class="qr" id="qr" width="25" height="25" aria-label="優惠 QR code"></canvas>
+          <div class="scanline"></div>
+        </div>
+        <div class="ticket" id="cust-ticket"></div>
+        <button type="button" class="cta" id="scan">店員掃碼</button>
+      </div>
+      <div id="done" class="result" hidden>
+        <div class="stamp">已核銷</div>
+        <h3 id="done-title" style="font-size:22px"></h3>
+        <p class="via" id="done-via"></p>
+        <div class="ledger">
+          <div><span>商戶俾佣金</span><b id="l-fee"></b></div>
+          <div><span>KOL 收</span><b id="l-kol"></b></div>
+          <div><span>平台收</span><b id="l-plat" style="color:var(--jade)"></b></div>
+        </div>
+        <p class="hint">每個 QR 只可以用一次，再掃會顯示「已使用」。</p>
+        <button type="button" class="cta ghost" id="again">再嚟一位客</button>
+        <button type="button" class="cta" id="to-dash">睇成效</button>
+      </div>
+    </section>
+
+    <!-- 4 Dashboard -->
+    <section class="screen" data-step="3" hidden>
+      <div class="tabs" role="tablist">
+        <button type="button" role="tab" aria-selected="true" data-tab="m">商戶睇</button>
+        <button type="button" role="tab" aria-selected="false" data-tab="p">平台（你）睇</button>
+      </div>
+      <div id="tab-m"></div>
+      <div id="tab-p" hidden></div>
+    </section>
+
+    <div class="toast" id="toast"></div>
+  </div>
+</main>
+
+<script>
+  const STEPS = [
+    { title: "商戶上架 coupon", who: "阿財冰室 · 商戶版", what: "新增優惠",
+      say: "商戶自己定優惠同每位客嘅佣金。上架免費，冇客上門就唔使俾錢。" },
+    { title: "KOL 攞專屬 code", who: "KOL 版", what: "揀優惠推介",
+      say: "每個 KOL 有自己嘅 code 同 link，邊個帶嚟嘅客一清二楚。" },
+    { title: "客人到店核銷", who: "阿財冰室 · 收銀", what: "掃碼核銷",
+      say: "店員用手機一掃就得，唔使改 POS。QR 一次性，防重複使用。" },
+    { title: "成效同收入", who: "報表", what: "今個月成效",
+      say: "商戶睇到每個 KOL 帶咗幾多客；你睇到成個平台收幾多錢。" },
+  ];
+
+  const SEED_KOLS = [
+    { name: "@食好啲先", n: 41 },
+    { name: "@深水埗搵食", n: 33 },
+    { name: "@hkfoodie_mia", n: 27 },
+    { name: "@週末去邊食", n: 19 },
+  ];
+  const OTHER_SHOPS = [
+    { name: "旺記燒味", n: 212, fee: 12 },
+    { name: "麵家小館", n: 158, fee: 15 },
+    { name: "Café Kumo", n: 96, fee: 20 },
+  ];
+  const AVG_SPEND = 118;
+
+  const state = fresh();
+  function fresh() {
+    return { step: 0, fee: 15, published: false, code: null, redeemed: 0, used: false, tab: "m" };
+  }
+
+  const $ = (id) => document.getElementById(id);
+  const money = (v) => "$" + v.toLocaleString("en-HK");
+
+  function ticketHTML(extra = "") {
+    const t = $("f-title").value || "優惠";
+    const c = $("f-cond").value;
+    return `<div class="main"><div class="shop">阿財冰室 · 深水埗</div>
+      <div class="title">${esc(t)}${extra}</div><div class="cond">${esc(c)}</div></div>
+      <div class="stub">剩餘<b>${200 - state.redeemed}</b>張</div>`;
+  }
+  function esc(s) {
+    return s.replace(/[&<>"]/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+  }
+
+  function toast(msg) {
+    const el = $("toast");
+    el.textContent = msg;
+    el.classList.add("show");
+    clearTimeout(toast.t);
+    toast.t = setTimeout(() => el.classList.remove("show"), 1800);
+  }
+
+  function renderRail() {
+    $("steps").innerHTML = STEPS.map((s, i) => `
+      <li><button type="button" class="step ${i < state.step ? "done" : ""}"
+        ${i === state.step ? 'aria-current="step"' : ""} data-go="${i}">
+        <span class="n">${i < state.step ? "✓" : i + 1}</span>
+        <span><h3>${s.title}</h3><p>${s.say}</p></span>
+      </button></li>`).join("");
+  }
+
+  function go(i) {
+    state.step = Math.max(0, Math.min(STEPS.length - 1, i));
+    document.querySelectorAll(".screen").forEach((el) => {
+      el.hidden = Number(el.dataset.step) !== state.step;
+    });
+    $("who").textContent = STEPS[state.step].who;
+    $("what").textContent = STEPS[state.step].what;
+    if (state.step === 1) renderKol();
+    if (state.step === 2) renderStore();
+    if (state.step === 3) renderDash();
+    renderRail();
+  }
+
+  /* 1 — merchant */
+  function renderPreview() { $("preview").innerHTML = ticketHTML(); }
+  $("f-title").addEventListener("input", renderPreview);
+  $("f-cond").addEventListener("input", renderPreview);
+  $("fee").addEventListener("click", (e) => {
+    const b = e.target.closest("button");
+    if (!b) return;
+    state.fee = Number(b.dataset.v);
+    $("fee").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", x === b));
+  });
+  $("publish").addEventListener("click", () => {
+    state.published = true;
+    toast("已上架，KOL 而家睇到");
+    setTimeout(() => go(1), 700);
+  });
+
+  /* 2 — KOL */
+  function renderKol() {
+    const kolCut = Math.round(state.fee * 2 / 3);
+    const mine = state.published ? `
+      <div class="ticket new">${ticketHTML('<span class="badge">新</span>')}</div>
+      <p class="earn">每帶一位客核銷，你賺 ${money(kolCut)}</p>
+      ${state.code ? "" : '<button type="button" class="cta" id="get-code">攞我嘅專屬 code</button>'}` :
+      '<p class="hint">商戶仲未上架優惠，返去第 1 步。</p>';
+    $("kol-list").innerHTML = mine + `
+      <div class="ticket" style="margin-top:18px;opacity:.6"><div class="main">
+        <div class="shop">旺記燒味 · 旺角</div><div class="title">叉燒飯送凍飲</div>
+        <div class="cond">全日</div></div><div class="stub">剩餘<b>64</b>張</div></div>`;
+    const btn = $("get-code");
+    if (btn) btn.addEventListener("click", () => {
+      state.code = "FOOD-" + Math.random().toString(36).slice(2, 6).toUpperCase();
+      renderKol();
+      toast("Code 已產生");
+    });
+    $("kol-code").hidden = !state.code;
+    if (state.code) {
+      $("code-text").textContent = state.code;
+      const link = "daaihaak.hk/c/" + state.code.slice(5);
+      $("code-link").textContent = link;
+      $("post-link").textContent = link;
+    }
+  }
+  $("to-store").addEventListener("click", () => go(2));
+
+  /* 3 — redeem */
+  function drawQR(seed) {
+    const cv = $("qr"), ctx = cv.getContext("2d"), N = 25;
+    let h = 0;
+    for (const ch of seed) h = (h * 31 + ch.charCodeAt(0)) >>> 0;
+    const rnd = () => ((h = (h * 1103515245 + 12345) >>> 0) / 4294967296);
+    ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, N, N);
+    ctx.fillStyle = "#1e1b2e";
+    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) if (rnd() > .52) ctx.fillRect(x, y, 1, 1);
+    const finder = (x, y) => {
+      ctx.fillStyle = "#fff"; ctx.fillRect(x - 1, y - 1, 9, 9);
+      ctx.fillStyle = "#1e1b2e"; ctx.fillRect(x, y, 7, 7);
+      ctx.fillStyle = "#fff"; ctx.fillRect(x + 1, y + 1, 5, 5);
+      ctx.fillStyle = "#1e1b2e"; ctx.fillRect(x + 2, y + 2, 3, 3);
+    };
+    finder(0, 0); finder(N - 7, 0); finder(0, N - 7);
+  }
+  function renderStore() {
+    $("cust").hidden = false;
+    $("done").hidden = true;
+    state.used = false;
+    $("cust-ticket").innerHTML = ticketHTML();
+    drawQR((state.code || "DEMO") + state.redeemed);
+    $("scan").disabled = false;
+  }
+  $("scan").addEventListener("click", () => {
+    if (state.used) { toast("呢張 coupon 已經用咗"); return; }
+    $("scan").disabled = true;
+    const wrap = $("qrwrap");
+    wrap.classList.remove("scanning"); void wrap.offsetWidth; wrap.classList.add("scanning");
+    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    setTimeout(() => {
+      state.used = true;
+      state.redeemed += 1;
+      const kol = Math.round(state.fee * 2 / 3);
+      $("done-title").textContent = $("f-title").value;
+      $("done-via").textContent = `經 @食好啲先 · code ${state.code || "FOOD-DEMO"}`;
+      $("l-fee").textContent = money(state.fee);
+      $("l-kol").textContent = money(kol);
+      $("l-plat").textContent = money(state.fee - kol);
+      $("cust").hidden = true;
+      $("done").hidden = false;
+    }, reduce ? 0 : 1100);
+  });
+  $("again").addEventListener("click", renderStore);
+  $("to-dash").addEventListener("click", () => go(3));
+
+  /* 4 — dashboard */
+  function renderDash() {
+    const kols = SEED_KOLS.map((k, i) => ({ ...k, n: k.n + (i === 0 ? state.redeemed : 0) }));
+    const total = kols.reduce((a, k) => a + k.n, 0);
+    const max = Math.max(...kols.map((k) => k.n));
+    $("tab-m").innerHTML = `
+      <div class="kpis">
+        <div class="kpi hero"><small>KOL 今個月帶嚟嘅客</small><b>${total} 位</b></div>
+        <div class="kpi"><small>帶嚟生意額（估）</small><b>${money(total * AVG_SPEND)}</b></div>
+        <div class="kpi"><small>俾咗佣金</small><b>${money(total * state.fee)}</b></div>
+      </div>
+      <h4>邊個 KOL 帶客最多</h4>
+      ${kols.map((k, i) => `<div class="bar ${i === 0 && state.redeemed ? "lit" : ""}">
+        <div class="row"><span>${k.name}</span><b>${k.n}</b></div>
+        <div class="track"><div class="fill" style="width:${k.n / max * 100}%"></div></div></div>`).join("")}
+      <p class="note">每位客成本 ${money(state.fee)}，對比一口價 post 動輒 $1,500 起，冇客就唔使俾。</p>`;
+
+    const platFee = (fee) => fee - Math.round(fee * 2 / 3);
+    const shops = [{ name: "阿財冰室", n: total, fee: state.fee, me: true }, ...OTHER_SHOPS];
+    const rev = shops.reduce((a, s) => a + s.n * platFee(s.fee), 0);
+    const reds = shops.reduce((a, s) => a + s.n, 0);
+    $("tab-p").innerHTML = `
+      <div class="kpis">
+        <div class="kpi hero"><small>平台今個月收入</small><b>${money(rev)}</b></div>
+        <div class="kpi"><small>商戶</small><b>${shops.length} 間</b></div>
+        <div class="kpi"><small>總核銷</small><b>${reds}</b></div>
+      </div>
+      <h4>每間商戶</h4>
+      <table><thead><tr><th>商戶</th><th class="r">核銷</th><th class="r">平台收</th></tr></thead>
+      <tbody>${shops.map((s) => `<tr class="${s.me && state.redeemed ? "lit" : ""}">
+        <td>${s.name}</td><td class="r">${s.n}</td><td class="r">${money(s.n * platFee(s.fee))}</td></tr>`).join("")}
+      </tbody></table>
+      <p class="note">示範數字。商戶越多、核銷越多，平台收入跟住升；唔使預先收商戶月費。</p>`;
+    showTab(state.tab);
+  }
+  function showTab(t) {
+    state.tab = t;
+    document.querySelectorAll("[role=tab]").forEach((b) => b.setAttribute("aria-selected", b.dataset.tab === t));
+    $("tab-m").hidden = t !== "m";
+    $("tab-p").hidden = t !== "p";
+  }
+  document.querySelector(".tabs").addEventListener("click", (e) => {
+    const b = e.target.closest("[role=tab]");
+    if (b) showTab(b.dataset.tab);
+  });
+
+  /* navigation */
+  $("steps").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-go]");
+    if (b) go(Number(b.dataset.go));
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.target.tagName === "INPUT") return;
+    if (e.key === "ArrowRight") go(state.step + 1);
+    if (e.key === "ArrowLeft") go(state.step - 1);
+  });
+  $("reset").addEventListener("click", () => {
+    Object.assign(state, fresh());
+    $("f-title").value = "堂食 9 折";
+    $("f-cond").value = "每單滿 $80，平日 2–6pm";
+    $("fee").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", x.dataset.v === "15"));
+    renderPreview();
+    go(0);
+  });
+
+  renderPreview();
+  go(0);
+</script>
+</body>
+</html>
