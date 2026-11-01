@@ -11,6 +11,7 @@
 
 
 
+
   :root {
     --bg: #f4f5f7;
     --card: #ffffff;
@@ -123,6 +124,12 @@
   .refimg figcaption { font-size: 0.82rem; color: var(--muted); margin-top: 6px; }
 
 
+
+  .plink { text-decoration: none; opacity: 0.35; font-size: 0.72em; margin-left: 5px; font-weight: 400; }
+  .plink:hover { opacity: 1; color: var(--accent); }
+  h2:hover .plink, h3:hover .plink, h4:hover .plink { opacity: 1; }
+
+
 </style>
 </head>
 <body>
@@ -131,49 +138,58 @@
 <details class="toc" open>
 <summary>📑 目錄</summary>
 <ol class="toc-list">
-<li class="toc-h2"><a href="#sec-1">一句定位</a></li>
-<li class="toc-h2"><a href="#sec-2">平台定位</a></li>
-<li class="toc-h2"><a href="#sec-3">商業計劃 (Business Plan)</a></li>
-<li class="toc-h3"><a href="#sec-4">執行摘要</a></li>
-<li class="toc-h3"><a href="#sec-5">願景</a></li>
-<li class="toc-h3"><a href="#sec-6">市場機會</a></li>
-<li class="toc-h3"><a href="#sec-7">產品與解決方案</a></li>
-<li class="toc-h3"><a href="#sec-8">Phase 1（優先做）— 個體用戶 + 輕量商戶</a></li>
-<li class="toc-h4"><a href="#sec-9">功能（四塊）</a></li>
-<li class="toc-h4"><a href="#sec-10">Referral 機制詳細設計（參考 Friendbuy）</a></li>
-<li class="toc-h4"><a href="#sec-11">商業模式</a></li>
-<li class="toc-h4"><a href="#sec-12">分享折扣引擎（Share-to-Unlock）— 病毒式增長</a></li>
-<li class="toc-h4"><a href="#sec-13">Phase 1 明確唔包</a></li>
-<li class="toc-h3"><a href="#sec-14">Phase 2（之後做）— 商戶 / 企業端</a></li>
-<li class="toc-h3"><a href="#sec-15">收入模式（三條線）</a></li>
-<li class="toc-h3"><a href="#sec-16">增長策略</a></li>
-<li class="toc-h3"><a href="#sec-17">單位經濟（示例，要按實際數字再計）</a></li>
-<li class="toc-h3"><a href="#sec-18">路線圖</a></li>
-<li class="toc-h3"><a href="#sec-19">風險與對策</a></li>
-<li class="toc-h3"><a href="#sec-20">資源需求（種子期）</a></li>
-<li class="toc-h2"><a href="#sec-21">新增目標客群：內地旅客來港消費</a></li>
-<li class="toc-h3"><a href="#sec-22">點解值得做</a></li>
-<li class="toc-h3"><a href="#sec-23">宣傳策略：點樣 reach 內地旅客</a></li>
-<li class="toc-h3"><a href="#sec-24">落地注意</a></li>
-<li class="toc-h2"><a href="#sec-25">宣傳方向：時事熱點 + 香港情懷</a></li>
-<li class="toc-h3"><a href="#sec-26">點解有效</a></li>
-<li class="toc-h3"><a href="#sec-27">點樣執行（AI 自動生成）</a></li>
-<li class="toc-h3"><a href="#sec-28">情懷主題庫（長期可用）</a></li>
-<li class="toc-h3"><a href="#sec-29">注意</a></li>
-<li class="toc-h2"><a href="#sec-30">宣傳方向 2：Social Listening（趨勢監察工具）</a></li>
-<li class="toc-h3"><a href="#sec-31">數據來源</a></li>
-<li class="toc-h3"><a href="#sec-32">點幫商戶 marketing</a></li>
-<li class="toc-h2"><a href="#sec-33">市場 / 競爭</a></li>
-<li class="toc-h3"><a href="#sec-34">市場分三類</a></li>
-<li class="toc-h3"><a href="#sec-35">ShopBack 對比</a></li>
-<li class="toc-h3"><a href="#sec-36">藍海位同風險</a></li>
-<li class="toc-h2"><a href="#sec-37">關鍵決定（要拍板）</a></li>
-<li class="toc-h2"><a href="#sec-38">下一步建議（可討論）</a></li>
-<li class="toc-h2"><a href="#sec-39">變更記錄 (Change History)</a></li>
+<li class="toc-h2"><a href="#sec-1">摘要（4 個重點）</a></li>
+<li class="toc-h2"><a href="#sec-2">一句定位</a></li>
+<li class="toc-h2"><a href="#sec-3">平台定位</a></li>
+<li class="toc-h2"><a href="#sec-4">商業計劃 (Business Plan)</a></li>
+<li class="toc-h3"><a href="#sec-5">執行摘要</a></li>
+<li class="toc-h3"><a href="#sec-6">願景</a></li>
+<li class="toc-h3"><a href="#sec-7">市場機會</a></li>
+<li class="toc-h3"><a href="#sec-8">產品與解決方案</a></li>
+<li class="toc-h3"><a href="#sec-9">Phase 1（優先做）— 個體用戶 + 輕量商戶</a></li>
+<li class="toc-h4"><a href="#sec-10">功能（四塊）</a></li>
+<li class="toc-h4"><a href="#sec-11">Referral 機制詳細設計（參考 Friendbuy）</a></li>
+<li class="toc-h4"><a href="#sec-12">商業模式</a></li>
+<li class="toc-h4"><a href="#sec-13">分享折扣引擎（Share-to-Unlock）— 病毒式增長</a></li>
+<li class="toc-h4"><a href="#sec-14">Phase 1 明確唔包</a></li>
+<li class="toc-h3"><a href="#sec-15">Phase 2（之後做）— 商戶 / 企業端</a></li>
+<li class="toc-h3"><a href="#sec-16">收入模式（三條線）</a></li>
+<li class="toc-h3"><a href="#sec-17">增長策略</a></li>
+<li class="toc-h3"><a href="#sec-18">單位經濟（示例，要按實際數字再計）</a></li>
+<li class="toc-h3"><a href="#sec-19">路線圖</a></li>
+<li class="toc-h3"><a href="#sec-20">風險與對策</a></li>
+<li class="toc-h3"><a href="#sec-21">資源需求（種子期）</a></li>
+<li class="toc-h2"><a href="#sec-22">新增目標客群：內地旅客來港消費</a></li>
+<li class="toc-h3"><a href="#sec-23">點解值得做</a></li>
+<li class="toc-h3"><a href="#sec-24">宣傳策略：點樣 reach 內地旅客</a></li>
+<li class="toc-h3"><a href="#sec-25">落地注意</a></li>
+<li class="toc-h2"><a href="#sec-26">宣傳方向：時事熱點 + 香港情懷</a></li>
+<li class="toc-h3"><a href="#sec-27">點解有效</a></li>
+<li class="toc-h3"><a href="#sec-28">點樣執行（AI 自動生成）</a></li>
+<li class="toc-h3"><a href="#sec-29">情懷主題庫（長期可用）</a></li>
+<li class="toc-h3"><a href="#sec-30">注意</a></li>
+<li class="toc-h2"><a href="#sec-31">宣傳方向 2：Social Listening（趨勢監察工具）</a></li>
+<li class="toc-h3"><a href="#sec-32">數據來源</a></li>
+<li class="toc-h3"><a href="#sec-33">點幫商戶 marketing</a></li>
+<li class="toc-h2"><a href="#sec-34">市場 / 競爭</a></li>
+<li class="toc-h3"><a href="#sec-35">市場分三類</a></li>
+<li class="toc-h3"><a href="#sec-36">ShopBack 對比</a></li>
+<li class="toc-h3"><a href="#sec-37">藍海位同風險</a></li>
+<li class="toc-h2"><a href="#sec-38">關鍵決定（要拍板）</a></li>
+<li class="toc-h2"><a href="#sec-39">下一步建議（可討論）</a></li>
+<li class="toc-h2"><a href="#sec-40">變更記錄 (Change History)</a></li>
 </ol>
 </details>
 <p>日期：2026-10-16（2026-10-31 更新 Phase 1 同市場分析）。來源：與 turbo 公司傾談後整理。</p>
-<h2 id="sec-1">一句定位</h2>
+<h2 id="sec-1">摘要（4 個重點） <a class="plink" href="#sec-1" title="複製連結">🔗</a></h2>
+<ol>
+<li><a href="#sec-31">Social Listening 趨勢監察工具</a> —— 內部工具，用 Google keywords + Threads trend keywords 捉最新香港熱話，幫商戶將業務 fit 入 trend。</li>
+<li><a href="#membership">會員制 / loyalty program</a> —— 付費會員有更好 coupon + 抽獎獎勵 2x，免費 coupon 廢啲。</li>
+<li><a href="#share-generator">分享素材生成器</a> —— 一鍵生成分享卡片，share 去 IG Story / WhatsApp（參考富途牛牛）。</li>
+<li><a href="#official-account">公眾號優惠平台</a> —— 類似小斯（flyformiles.hk），做信用卡 / 食飯優惠內容，聚「想搵優惠」嘅用家。</li>
+</ol>
+
+<h2 id="sec-2">一句定位 <a class="plink" href="#sec-2" title="複製連結">🔗</a></h2>
 <p><strong>推廣易 = 著數易嘅「帶客引擎」：商戶出 link，人人可分享，帶到客自動分佣。</strong></p>
 <ul>
 <li>著數易負責「優惠庫存 + 核銷 + 佣金」——已經有，唔好重造。</li>
@@ -181,32 +197,32 @@
 </ul>
 
 
-<h2 id="sec-2">平台定位</h2>
+<h2 id="sec-3">平台定位 <a class="plink" href="#sec-3" title="複製連結">🔗</a></h2>
 <p>一個連接「商戶 / 企業」同「個體用戶」嘅推廣平台。核心唔係「幫用戶慳錢」（cashback），而係「幫用戶賺錢」（分享分佣）。用 Membership + Share Link + Cash Rebate 驅動用戶，類似 Uber 式 mission-driven 生態，最終連接返「著數易」。</p>
-<p>同時係一個「優惠內容平台」：好似小斯（<a href="https://flyformiles.hk/" target="_blank" rel="noopener">flyformiles.hk</a>）做信用卡優惠咁，我哋用公眾號 / 內容去聚「想搵食飯 / 消費優惠」嘅用家——用家想搵有咩優惠，會嚟搵我哋。</p>
+<p id="official-account">同時係一個「優惠內容平台」：好似小斯（<a href="https://flyformiles.hk/" target="_blank" rel="noopener">flyformiles.hk</a>）做信用卡優惠咁，我哋用公眾號 / 內容去聚「想搵食飯 / 消費優惠」嘅用家——用家想搵有咩優惠，會嚟搵我哋。</p>
 
 
 
-<h2 id="sec-3">商業計劃 (Business Plan)</h2>
-<h3 id="sec-4">執行摘要</h3>
+<h2 id="sec-4">商業計劃 (Business Plan) <a class="plink" href="#sec-4" title="複製連結">🔗</a></h2>
+<h3 id="sec-5">執行摘要 <a class="plink" href="#sec-5" title="複製連結">🔗</a></h3>
 <p>推廣易 = 著數易嘅「帶客引擎」：商戶 $0 出錢做 marketing，平台把優惠變商品賣俾用家（賣 coupon 賺 profit），再向商戶追加 AI marketing，並用「分享攞更深折扣」令用戶病毒式帶客。Target 香港本地用戶 + 內地旅客來港消費。香港 consumer 級「分享 coupon → 到店核銷 → 帶客自動分佣」係藍海。</p>
-<h3 id="sec-5">願景</h3>
+<h3 id="sec-6">願景 <a class="plink" href="#sec-6" title="複製連結">🔗</a></h3>
 <p>人人可分享、帶到客就有得賺——把每個香港商戶嘅優惠，變成一條可追蹤、可變現嘅分享鏈。</p>
-<h3 id="sec-6">市場機會</h3>
+<h3 id="sec-7">市場機會 <a class="plink" href="#sec-7" title="複製連結">🔗</a></h3>
 <ul>
 <li><strong>問題</strong>：中小商戶冇 budget 做 marketing；現有 cashback（ShopBack）只係「自己慳自己」，冇人做「分享分佣」。</li>
 <li><strong>目標客群</strong>：香港本地消費者（食買玩）＋ 內地旅客來港消費（零售、餐飲、藥妝、奢侈品）。</li>
 <li><strong>市場規模（粗略）</strong>：香港零售 + 餐飲每年數千億港元；內地訪港旅客消費千億級。起步打頭 100 個商戶 + 1 萬用戶已可驗證模型。</li>
 <li><strong>藍海</strong>：香港冇人做 consumer 級分享分佣，仲連住一個現成 coupon 平台（著數易）。</li>
 </ul>
-<h3 id="sec-7">產品與解決方案</h3>
+<h3 id="sec-8">產品與解決方案 <a class="plink" href="#sec-8" title="複製連結">🔗</a></h3>
 <ul>
 <li><strong>用戶</strong>：會員 + 專屬 share link + 分享折扣引擎 + 里程碑 rebate + VIP。</li>
 <li><strong>商戶</strong>：$0 行銷，出一條人人用得嘅 share link，睇 referral 報表。</li>
 <li><strong>平台</strong>：連接著數易 coupon 庫存 + 核銷 + 佣金邏輯，唔重造。</li>
 </ul>
-<h3 id="sec-8">Phase 1（優先做）— 個體用戶 + 輕量商戶</h3>
-<h4 id="sec-9">功能（四塊）</h4>
+<h3 id="sec-9">Phase 1（優先做）— 個體用戶 + 輕量商戶 <a class="plink" href="#sec-9" title="複製連結">🔗</a></h3>
+<h4 id="sec-10">功能（四塊） <a class="plink" href="#sec-10" title="複製連結">🔗</a></h4>
 <p><strong>1. 個體用戶</strong></p>
 <ul>
 <li>付月費成為會員，解鎖更多/獨家著數 + 更高回贈比例。</li>
@@ -214,7 +230,7 @@
 <li>朋友經 link 領券/用券 → 自己賺 rebate 或積分。</li>
 <li>Mission 任務：分享 / 使用 / 邀請 → 儲 rebate 或積分。</li>
 </ul>
-<p><strong>會員制（付費 vs 免費）</strong></p>
+<p id="membership"><strong>會員制（付費 vs 免費）</strong></p>
 <div class="tbl"><table>
 <thead>
 <tr>
@@ -253,7 +269,7 @@
 <li>回贈先以<strong>積分</strong>行（喺著數易消費用），Phase 2 先開放現金出金（避開 KYC / 支付 / 合規）。</li>
 <li>Mission 引擎：完成任務 → 自動發回贈。</li>
 </ul>
-<h4 id="sec-10">Referral 機制詳細設計（參考 Friendbuy）</h4>
+<h4 id="sec-11">Referral 機制詳細設計（參考 Friendbuy） <a class="plink" href="#sec-11" title="複製連結">🔗</a></h4>
 <p>Friendbuy 係海外 referral/loyalty SaaS，佢哋嘅機制可以直接套落推廣易。核心三件：<strong>獎勵儀表板 + 里程碑階梯 + 抽獎券</strong>。</p>
 <p><strong>1. 獎勵儀表板（用戶追蹤自己嘅 reward）</strong></p>
 <p>每筆 rebate 都寫明狀態 + 原因（白話）：</p>
@@ -307,7 +323,7 @@
 <p><strong>7. 防假（Fraud）</strong></p>
 <p>自己帶自己唔計、突然爆量要 hold 落嚟 review、退款要 reverse。</p>
 <blockquote><p>以上階梯數字（$10 / 3 / 10 / 25）係示例，要按單位經濟再定。</p></blockquote>
-<h4 id="sec-11">商業模式</h4>
+<h4 id="sec-12">商業模式 <a class="plink" href="#sec-12" title="複製連結">🔗</a></h4>
 <p>三條收入 + 一個增長引擎：</p>
 <ol>
 <li><strong>賣 coupon</strong>（主要 profit）：平台把優惠變商品賣俾用家，用家俾錢買 coupon。</li>
@@ -329,7 +345,7 @@ flowchart LR
     U -->|"📣 分享 coupon<br/>帶 1 個 40% off<br/>帶 5 個 80% off"| F
     F -->|"👥 領券 / 用券<br/>→ 增長 ③"| P
 </div>
-<h4 id="sec-12">分享折扣引擎（Share-to-Unlock）— 病毒式增長</h4>
+<h4 id="sec-13">分享折扣引擎（Share-to-Unlock）— 病毒式增長 <a class="plink" href="#sec-13" title="複製連結">🔗</a></h4>
 <p>平台唔止賣 coupon + AI marketing，核心增長機制係：<strong>用戶分享 coupon 俾朋友，自己攞更深折扣</strong>。</p>
 <p>買 coupon 嘅折扣係「動態」嘅，取決於帶咗幾多朋友：</p>
 <div class="tbl"><table>
@@ -390,7 +406,7 @@ flowchart LR
 </tbody>
 </table></div>
 <p>咁樣用戶有齊「慳（折扣）+ 賺（積分）+ 玩（抽獎）」三個理由，自然會主動變 KOL 去推介。</p>
-<p><strong>分享素材生成器（一鍵分享 IG Story / WhatsApp）</strong></p>
+<p id="share-generator"><strong>分享素材生成器（一鍵分享 IG Story / WhatsApp）</strong></p>
 <p>平台自動幫用戶生成「可分享」嘅社交素材（coupon 卡片 + 專屬 link 圖），一鍵 share 去 IG story / WhatsApp，令用戶零門檻做 KOL。</p>
 <p>參考：富途牛牛（Futu）嘅 refer 分享卡——用 mascot 牛牛 + 專屬連結整成一張靚圖，用戶見到就想 share：</p>
 <figure class="refimg">
@@ -403,14 +419,14 @@ flowchart LR
 <li>防「自己帶自己」：用 device / 賬號去重，假 referral 唔計數。</li>
 <li>折扣階梯可結合 VIP 等級（見上 Referral 機制），升級即解鎖更深折扣。</li>
 </ul>
-<h4 id="sec-13">Phase 1 明確唔包</h4>
+<h4 id="sec-14">Phase 1 明確唔包 <a class="plink" href="#sec-14" title="複製連結">🔗</a></h4>
 <ul>
 <li>AI 寫 post（文字）→ 移去 Phase 2。</li>
 <li>現金出金 → Phase 2（先積分）。</li>
 <li>商戶 / 企業會員功能 → Phase 2。</li>
 </ul>
 
-<h3 id="sec-14">Phase 2（之後做）— 商戶 / 企業端</h3>
+<h3 id="sec-15">Phase 2（之後做）— 商戶 / 企業端 <a class="plink" href="#sec-15" title="複製連結">🔗</a></h3>
 <ul>
 <li>商戶 / 企業會員功能。</li>
 <li>AI Marketing 生成工具：自動生成推廣內容。</li>
@@ -419,19 +435,19 @@ flowchart LR
 <li>現金出金（回贈可提現）。</li>
 </ul>
 
-<h3 id="sec-15">收入模式（三條線）</h3>
+<h3 id="sec-16">收入模式（三條線） <a class="plink" href="#sec-16" title="複製連結">🔗</a></h3>
 <ol>
 <li><strong>賣 coupon</strong> = 主要 profit。</li>
 <li><strong>AI marketing</strong>（AI 短視頻 / 虛擬偶像 / 內容營銷）= 額外收入。</li>
 <li><strong>分享折扣引擎</strong> = 增長引擎（非直接收入）：用戶做 KOL 主動 refer 朋友，靠「折扣 + 積分 + 抽獎券」三層誘因換獲客。</li>
 </ol>
-<h3 id="sec-16">增長策略</h3>
+<h3 id="sec-17">增長策略 <a class="plink" href="#sec-17" title="複製連結">🔗</a></h3>
 <ol>
 <li><strong>分享折扣引擎</strong>：0 / 1 / 5 帶客 → 20% / 40% / 80% off + 積分 + 抽獎券，令用戶做 KOL 主動推介。</li>
 <li><strong>內地旅客宣傳</strong>：AI Video Promoter App + AI Idol + 小紅書 / 抖音 / 微信內容營銷。</li>
 <li><strong>里程碑 + VIP + 抽獎券</strong>：留客、提升 LTV、返單。</li>
 </ol>
-<h3 id="sec-17">單位經濟（示例，要按實際數字再計）</h3>
+<h3 id="sec-18">單位經濟（示例，要按實際數字再計） <a class="plink" href="#sec-18" title="複製連結">🔗</a></h3>
 <p>假設 coupon 面值 $100：</p>
 <div class="tbl"><table>
 <thead>
@@ -468,13 +484,13 @@ flowchart LR
 </tbody>
 </table></div>
 <blockquote><p>深折扣 = 用毛利換增長。80% off 當獲客成本，真正賺喺復購 + AI marketing + 新客 LTV。呢個係「商家核銷時收唔收返錢」嘅關鍵，要拍板（見關鍵決定）。</p></blockquote>
-<h3 id="sec-18">路線圖</h3>
+<h3 id="sec-19">路線圖 <a class="plink" href="#sec-19" title="複製連結">🔗</a></h3>
 <ul>
 <li><strong>Phase 1（3–6 個月）</strong>：香港本地用戶 + 輕量商戶 + 連接著數易 + 積分回贈 + 分享折扣引擎 MVP。</li>
 <li><strong>Phase 1.5（6–12 個月）</strong>：內地旅客（微信 / 支付寶登入 + 小紅書 / 抖音宣傳 + AI 短視頻）。</li>
 <li><strong>Phase 2（12 個月+）</strong>：商戶 / 企業會員、AI marketing 全開、現金出金、全渠道整合。</li>
 </ul>
-<h3 id="sec-19">風險與對策</h3>
+<h3 id="sec-20">風險與對策 <a class="plink" href="#sec-20" title="複製連結">🔗</a></h3>
 <div class="tbl"><table>
 <thead>
 <tr>
@@ -505,7 +521,7 @@ flowchart LR
 </tr>
 </tbody>
 </table></div>
-<h3 id="sec-20">資源需求（種子期）</h3>
+<h3 id="sec-21">資源需求（種子期） <a class="plink" href="#sec-21" title="複製連結">🔗</a></h3>
 <ul>
 <li>工程：同著數易對接（tracking + 核銷回傳）1–2 人。</li>
 <li>商務：拉商戶 + 對接著數易團隊 1 人。</li>
@@ -514,16 +530,16 @@ flowchart LR
 </ul>
 
 
-<h2 id="sec-21">新增目標客群：內地旅客來港消費</h2>
+<h2 id="sec-22">新增目標客群：內地旅客來港消費 <a class="plink" href="#sec-22" title="複製連結">🔗</a></h2>
 <p>除咗香港本地用戶，加多一個重點 target：<strong>內地旅客來港消費</strong>。</p>
-<h3 id="sec-22">點解值得做</h3>
+<h3 id="sec-23">點解值得做 <a class="plink" href="#sec-23" title="複製連結">🔗</a></h3>
 <ul>
 <li>內地旅客係香港最大外來消費群：零售、餐飲、旅遊、藥妝、奢侈品。</li>
 <li>佢哋本身習慣「領券 → 核銷 → 返現」玩法（美團、大眾點評、抖音團購），教育成本接近零。</li>
 <li>香港 coupon 對佢哋有吸引力：匯率 + 優惠 + 到店場景。</li>
 <li>可以直接對接內地成熟平台，唔使由零教育用戶。</li>
 </ul>
-<h3 id="sec-23">宣傳策略：點樣 reach 內地旅客</h3>
+<h3 id="sec-24">宣傳策略：點樣 reach 內地旅客 <a class="plink" href="#sec-24" title="複製連結">🔗</a></h3>
 <p><strong>1. AI Video Promoter App（AI 短視頻批量宣傳）</strong></p>
 <ul>
 <li>AI 自動生成短視頻：優惠內容 + 香港門店 + 到店路線，一條 coupon 自動變 N 條片（唔同口吻 / 版本 / 平台尺寸）。</li>
@@ -541,7 +557,7 @@ flowchart LR
 <li>核心做法：AI 批量生成「香港攻略 + coupon 連結」內容串（食咩 / 買咩 / 點慳），軟性種草帶券。</li>
 <li>小紅書「香港探店 / 香港攻略」本來就係內地旅客決策入口，係最應該食嘅位。</li>
 </ul>
-<h3 id="sec-24">落地注意</h3>
+<h3 id="sec-25">落地注意 <a class="plink" href="#sec-25" title="複製連結">🔗</a></h3>
 <ul>
 <li>內地用戶要用 <strong>微信 / 支付寶登入</strong>（唔好用香港手機號做門檻）。</li>
 <li>支付：內地旅客用 Alipay / WeChat Pay 已經喺香港通行，核銷無障礙；Phase 1 用積分，唔使現金出金。</li>
@@ -549,15 +565,15 @@ flowchart LR
 </ul>
 
 
-<h2 id="sec-25">宣傳方向：時事熱點 + 香港情懷</h2>
+<h2 id="sec-26">宣傳方向：時事熱點 + 香港情懷 <a class="plink" href="#sec-26" title="複製連結">🔗</a></h2>
 <p>App 內容營銷嘅核心打法：<strong>蹭時事熱點 + 打香港情懷牌</strong>。兩樣都係香港人（同內地旅客）最 buy 嘅情緒入口。</p>
-<h3 id="sec-26">點解有效</h3>
+<h3 id="sec-27">點解有效 <a class="plink" href="#sec-27" title="複製連結">🔗</a></h3>
 <ul>
 <li><strong>時事熱點</strong>：跟住每日 trending，內容自帶流量，用戶會主動睇 / 主動 share。</li>
 <li><strong>香港情懷</strong>：集體回憶（舊冰室、霓虹、港產片、屋邨）係香港最強情緒按鈕，亦係內地旅客對「香港」嘅想像（港片 / 港式文化）。</li>
 <li>兩者合一：<strong>用情懷做包裝，用時事做時機</strong>——同一條 coupon，撞正熱話就爆。</li>
 </ul>
-<h3 id="sec-27">點樣執行（AI 自動生成）</h3>
+<h3 id="sec-28">點樣執行（AI 自動生成） <a class="plink" href="#sec-28" title="複製連結">🔗</a></h3>
 <p>AI 內容引擎每日 scan 香港熱話（新聞 / 社交 trending），自動配對相關商戶 coupon，生成「時事 + 情懷」內容：</p>
 <div class="tbl"><table>
 <thead>
@@ -590,7 +606,7 @@ flowchart LR
 </tbody>
 </table></div>
 <blockquote><p>上面觸發例子取自 2026-11-01 快照；時事要每日更新，唔係 fixed 清單。</p></blockquote>
-<h3 id="sec-28">情懷主題庫（長期可用）</h3>
+<h3 id="sec-29">情懷主題庫（長期可用） <a class="plink" href="#sec-29" title="複製連結">🔗</a></h3>
 <ul>
 <li>舊式冰室 / 茶餐廳、港式奶茶檸茶、大排檔。</li>
 <li>街頭小食：魚蛋、雞蛋仔、格仔餅、砵仔糕。</li>
@@ -598,7 +614,7 @@ flowchart LR
 <li>港產片 / 經典廣告對白 / 麥兜。</li>
 <li>老字號商戶（幾十年歷史嗰啲）→ 直接做「情懷 coupon」。</li>
 </ul>
-<h3 id="sec-29">注意</h3>
+<h3 id="sec-30">注意 <a class="plink" href="#sec-30" title="複製連結">🔗</a></h3>
 <ul>
 <li>時事要<strong>快</strong>：熱話 24–48 小時內就要出內容，遲咗就冇流量 → AI 自動生成係必要，唔係 nice-to-have。</li>
 <li>情懷要<strong>真</strong>：揀真係有故事嘅老字號 / 場景，唔好硬砌，否則反效果。</li>
@@ -606,14 +622,14 @@ flowchart LR
 </ul>
 
 
-<h2 id="sec-30">宣傳方向 2：Social Listening（趨勢監察工具）</h2>
+<h2 id="sec-31">宣傳方向 2：Social Listening（趨勢監察工具） <a class="plink" href="#sec-31" title="複製連結">🔗</a></h2>
 <p>內部工具，實時監察香港最新 trend，幫商戶將自己業務 fit 入最新熱話。</p>
-<h3 id="sec-31">數據來源</h3>
+<h3 id="sec-32">數據來源 <a class="plink" href="#sec-32" title="複製連結">🔗</a></h3>
 <ul>
 <li><strong>Google Keywords</strong>：Google 熱門搜尋詞 / Google Trends，睇香港人而家最關注咩。</li>
 <li><strong>Threads / 社交 trend keywords</strong>：Threads 熱門話題 + 小紅書 / IG 熱門 hashtag，捉最新潮流同用語。</li>
 </ul>
-<h3 id="sec-32">點幫商戶 marketing</h3>
+<h3 id="sec-33">點幫商戶 marketing <a class="plink" href="#sec-33" title="複製連結">🔗</a></h3>
 <ol>
 <li><strong>即時捉 trend</strong>：每日掃 Google + Threads 熱門關鍵字，出「今日香港熱話」。</li>
 <li><strong>自動配對商戶</strong>：熱話一出，自動建議邊間商戶 / 邊個 coupon 可以搭上個 trend。</li>
@@ -623,8 +639,8 @@ flowchart LR
 <blockquote><p>定位：對商戶係「AI marketing」服務嘅一部分（唔使自己諗點追 trend）；對平台係「時事 + 情懷」內容引擎嘅數據來源（見上）。</p></blockquote>
 
 
-<h2 id="sec-33">市場 / 競爭</h2>
-<h3 id="sec-34">市場分三類</h3>
+<h2 id="sec-34">市場 / 競爭 <a class="plink" href="#sec-34" title="複製連結">🔗</a></h2>
+<h3 id="sec-35">市場分三類 <a class="plink" href="#sec-35" title="複製連結">🔗</a></h3>
 <p><strong>① Cashback — 你自己消費、自己慳（同推廣易「似而不同」）</strong></p>
 <div class="tbl"><table>
 <thead>
@@ -686,7 +702,7 @@ flowchart LR
 </table></div>
 <p><strong>③ KOL 撮合 — 搵人寫 post</strong></p>
 <p>Look4KOL、HK-KOL、Collabstr、Kolr、AnyTag。呢啲係「花錢請一個人寫 post」，唔係「人人分享、人人分佣」。</p>
-<h3 id="sec-35">ShopBack 對比</h3>
+<h3 id="sec-36">ShopBack 對比 <a class="plink" href="#sec-36" title="複製連結">🔗</a></h3>
 <div class="tbl"><table>
 <thead>
 <tr>
@@ -734,7 +750,7 @@ flowchart LR
 </tbody>
 </table></div>
 <p><strong>結論：ShopBack 係「慳錢工具」（主打網購），推廣易係「賺錢引擎」（到店實體消費）。</strong> 場景同用戶心理都唔同——ShopBack 喺 online 慳自己嘅；推廣易係到店消費 + 分享分佣，即「順手幫人 + 自己有得袋」。</p>
-<h3 id="sec-36">藍海位同風險</h3>
+<h3 id="sec-37">藍海位同風險 <a class="plink" href="#sec-37" title="複製連結">🔗</a></h3>
 <ul>
 <li><strong>藍海</strong>：香港 consumer 級「分享 coupon → 到店核銷 → 帶客者自動分佣」，仲要連住一個已有 coupon 平台（著數易）。目前冇人咁做。</li>
 <li><strong>風險 1</strong>：ShopBack 有錢有用戶，加個「share link referral」就係最大威脅。佢哋核心係網購返現，到店 + 餐飲 + coupon 分銷係未深耕位——係「時機」優勢，唔係護城河。</li>
@@ -742,7 +758,7 @@ flowchart LR
 </ul>
 
 
-<h2 id="sec-37">關鍵決定（要拍板）</h2>
+<h2 id="sec-38">關鍵決定（要拍板） <a class="plink" href="#sec-38" title="複製連結">🔗</a></h2>
 <ol>
 <li><strong>回贈出金</strong>：Phase 1 只做積分（建議），定係都要現金？</li>
 <li><strong>賬號打通</strong>：推廣易同著數易係咪同一個 login / 同一套用戶數據？（建議係，否則 tracking 會斷）</li>
@@ -753,7 +769,7 @@ flowchart LR
 </ol>
 
 
-<h2 id="sec-38">下一步建議（可討論）</h2>
+<h2 id="sec-39">下一步建議（可討論） <a class="plink" href="#sec-39" title="複製連結">🔗</a></h2>
 <ul>
 <li>拍板上面 5 個關鍵決定。</li>
 <li>設計 Cash Rebate + Mission 機制細節（積分點計、任務清單、回贈比例、里程碑階梯數字）。</li>
@@ -761,7 +777,7 @@ flowchart LR
 <li>準備短 Pitch 版本俾其他潛在合作方。</li>
 </ul>
 <p>如有需要可再細化任何部分。</p>
-<h2 id="sec-39">變更記錄 (Change History)</h2>
+<h2 id="sec-40">變更記錄 (Change History) <a class="plink" href="#sec-40" title="複製連結">🔗</a></h2>
 <ul>
 <li><strong>2026-11-01</strong>：新增 Social Listening 趨勢監察工具（Google keywords + Threads trend keywords）。</li>
 <li><strong>2026-11-01</strong>：加入會員制 / loyalty program（付費 vs 免費）— 更好 coupon + 抽獎獎勵 2x。</li>
